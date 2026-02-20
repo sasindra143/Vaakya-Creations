@@ -1,0 +1,81 @@
+/* App Wrapper */
+
+.app-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Main content area */
+
+.main-content {
+  margin-top: 90px; /* Adjust based on header height */
+  padding: 40px 20px;
+}
+
+/* Hero Section Placeholder */
+
+.hero-placeholder {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.hero-placeholder h2 {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.hero-placeholder p {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 30px;
+}
+
+/* Button */
+
+.primary-btn {
+  background-color: #d4af37;
+  color: white;
+  padding: 12px 30px;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.primary-btn:hover {
+  background-color: black;
+}
+
+/* Responsive */
+
+@media (min-width: 768px) {
+  .hero-placeholder h2 {
+    font-size: 42px;
+  }
+
+  .hero-placeholder p {
+    font-size: 18px;
+  }
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #f3f3f3;
+}
+
+.main-content {
+  flex: 1;
+  padding-top: 90px; /* header height */
+}
+
+.static-page {
+  padding: 60px;
+  font-size: 28px;
+}

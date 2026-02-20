@@ -1,0 +1,291 @@
+/* ================================================
+   CART PAGE – ADVANCED LUXURY LAYOUT
+================================================ */
+
+.cart-page {
+  width: 100%;
+  min-height: 100vh;
+  padding: 80px 4%;
+  background: linear-gradient(to bottom, #fafafa, #f2f2f2);
+}
+
+/* =================================================
+   MAIN CONTAINER (WIDER + RESPONSIVE)
+================================================= */
+
+.cart-container {
+  max-width: 1600px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 2.3fr 1fr;
+  gap: 60px;
+  align-items: flex-start;
+}
+
+/* =================================================
+   LEFT SIDE – CART ITEMS
+================================================= */
+
+.cart-items {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+/* =================================================
+   CART ITEM CARD
+================================================= */
+
+.cart-item {
+  display: flex;
+  align-items: center;
+  gap: 35px;
+  background: #ffffff;
+  padding: 28px;
+  border-radius: 18px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.cart-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.08);
+}
+
+/* =================================================
+   PRODUCT IMAGE
+================================================= */
+
+.cart-item img {
+  width: 160px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.cart-item img:hover {
+  transform: scale(1.05);
+}
+
+/* =================================================
+   PRODUCT INFO
+================================================= */
+
+.cart-info {
+  flex: 1;
+}
+
+.cart-info h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.cart-price {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+/* =================================================
+   QUANTITY CONTROLS
+================================================= */
+
+.qty-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.qty-controls button {
+  width: 36px;
+  height: 36px;
+  background: #000;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s ease;
+}
+
+.qty-controls button:hover {
+  background: #333;
+  transform: scale(1.1);
+}
+
+.qty-controls span {
+  font-size: 16px;
+  font-weight: 600;
+  min-width: 25px;
+  text-align: center;
+}
+
+/* =================================================
+   REMOVE BUTTON
+================================================= */
+
+.remove-btn {
+  background: none;
+  border: none;
+  font-size: 15px;
+  color: #c0392b;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: all 0.2s ease;
+}
+
+.remove-btn:hover {
+  color: #e74c3c;
+  text-decoration: underline;
+}
+
+/* =================================================
+   ITEM TOTAL
+================================================= */
+
+.cart-total {
+  font-weight: 700;
+  font-size: 18px;
+  color: #111;
+  margin-left: auto;
+}
+
+/* =================================================
+   RIGHT SIDE – SUMMARY BOX
+================================================= */
+
+.cart-summary {
+  background: #ffffff;
+  padding: 40px;
+  border-radius: 18px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.06);
+  position: sticky;
+  top: 120px;
+}
+
+.cart-summary h3 {
+  font-size: 22px;
+  margin-bottom: 25px;
+}
+
+/* =================================================
+   SUMMARY ROWS
+================================================= */
+
+.summary-row,
+.summary-total {
+  display: flex;
+  justify-content: space-between;
+  margin: 18px 0;
+  font-size: 15px;
+}
+
+.summary-total {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.summary-divider {
+  height: 1px;
+  background: #e5e5e5;
+  margin: 15px 0;
+}
+
+/* =================================================
+   CHECKOUT BUTTON
+================================================= */
+
+.checkout-btn {
+  width: 100%;
+  padding: 16px;
+  background: #000;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  margin-top: 30px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.checkout-btn:hover {
+  background: #222;
+  transform: translateY(-2px);
+}
+
+/* =================================================
+   EMPTY CART DESIGN
+================================================= */
+
+.empty-cart {
+  width: 100%;
+  padding: 140px 20px;
+  text-align: center;
+}
+
+.empty-cart h2 {
+  font-size: 26px;
+  margin-bottom: 20px;
+}
+
+.shop-btn {
+  display: inline-block;
+  padding: 14px 32px;
+  background: #000;
+  color: #fff;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.shop-btn:hover {
+  background: #333;
+  transform: translateY(-2px);
+}
+
+/* =================================================
+   RESPONSIVE DESIGN
+================================================= */
+
+@media (max-width: 1200px) {
+  .cart-container {
+    grid-template-columns: 1.7fr 1fr;
+    gap: 40px;
+  }
+}
+
+@media (max-width: 992px) {
+  .cart-container {
+    grid-template-columns: 1fr;
+  }
+
+  .cart-summary {
+    position: static;
+    margin-top: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .cart-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cart-item img {
+    width: 100%;
+    height: auto;
+  }
+
+  .cart-total {
+    margin-left: 0;
+    margin-top: 10px;
+  }
+}

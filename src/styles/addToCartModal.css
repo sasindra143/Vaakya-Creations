@@ -1,0 +1,103 @@
+.atc-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: fadeIn 0.3s ease;
+}
+
+.atc-modal {
+  width: 700px;
+  background: white;
+  border-radius: 8px;
+  padding: 25px;
+  animation: slideUp 0.3s ease;
+}
+
+.atc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.atc-success {
+  color: green;
+  font-weight: 600;
+}
+
+.atc-close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.atc-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
+.atc-left img {
+  width: 180px;
+  border-radius: 6px;
+}
+
+.atc-left h4 {
+  margin-top: 10px;
+  font-size: 16px;
+}
+
+.atc-right {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.atc-subtotal {
+  font-weight: 600;
+}
+
+.atc-btn {
+  padding: 12px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.atc-btn.primary {
+  background: #333;
+  color: white;
+}
+
+.atc-btn.secondary {
+  background: #555;
+  color: white;
+}
+
+.atc-continue {
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0 }
+  to { opacity: 1 }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

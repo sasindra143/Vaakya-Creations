@@ -1,0 +1,284 @@
+/* ======================================
+   OVERLAY
+====================================== */
+
+.qv-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  backdrop-filter: blur(3px);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 120px; /* space from header */
+  z-index: 9999;
+  overflow-y: auto;
+}
+
+/* ======================================
+   MODAL
+====================================== */
+
+.qv-modal {
+  width: 95%;
+  max-width: 1150px;
+  max-height: 85vh;
+  background: #fff;
+  border-radius: 14px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  animation: qvFade 0.3s ease;
+}
+
+@keyframes qvFade {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ======================================
+   CLOSE BUTTON
+====================================== */
+
+.qv-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: #f2f2f2;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+  z-index: 10;
+}
+
+.qv-close:hover {
+  background: #000;
+  color: #fff;
+}
+
+/* ======================================
+   INNER LAYOUT
+====================================== */
+
+.qv-container {
+  display: flex;
+  width: 100%;
+}
+
+/* ======================================
+   LEFT IMAGE
+====================================== */
+
+.qv-left {
+  flex: 1;
+  background: #fafafa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.qv-left img {
+  max-width: 100%;
+  max-height: 600px;
+  object-fit: contain;
+}
+
+/* ======================================
+   RIGHT CONTENT
+====================================== */
+
+.qv-right {
+  flex: 1;
+  padding: 40px;
+  overflow-y: auto;
+}
+
+/* Scrollbar */
+.qv-right::-webkit-scrollbar {
+  width: 6px;
+}
+
+.qv-right::-webkit-scrollbar-thumb {
+  background: #bbb;
+  border-radius: 10px;
+}
+
+.qv-right::-webkit-scrollbar-thumb:hover {
+  background: #888;
+}
+
+/* ======================================
+   CONTENT STYLES
+====================================== */
+
+.qv-title {
+  font-size: 28px;
+  margin-bottom: 15px;
+}
+
+.qv-price {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.qv-old {
+  margin-left: 10px;
+  text-decoration: line-through;
+  color: #999;
+  font-size: 16px;
+}
+
+.qv-tax {
+  font-size: 13px;
+  color: #777;
+  margin-bottom: 25px;
+}
+
+/* SIZE */
+
+.qv-size-label {
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.qv-size-options {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
+.qv-size {
+  padding: 8px 16px;
+  border: 1px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.qv-size:hover {
+  border-color: #000;
+}
+
+.qv-size.active {
+  background: #000;
+  color: #fff;
+  border-color: #000;
+}
+
+/* STOCK */
+
+.qv-stock {
+  margin-bottom: 25px;
+  font-size: 14px;
+}
+
+.qv-stock-bar {
+  width: 100%;
+  height: 6px;
+  background: #eee;
+  border-radius: 10px;
+  margin-top: 8px;
+}
+
+.qv-stock-fill {
+  width: 35%;
+  height: 100%;
+  background: green;
+  border-radius: 10px;
+}
+
+/* QUANTITY */
+
+.qv-qty {
+  margin-bottom: 30px;
+}
+
+.qv-qty-box {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-top: 8px;
+}
+
+.qv-qty-box button {
+  width: 35px;
+  height: 35px;
+  border: 1px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+  font-size: 18px;
+  transition: 0.2s;
+}
+
+.qv-qty-box button:hover {
+  background: #000;
+  color: #fff;
+}
+
+/* BUTTONS */
+
+.qv-buttons {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.qv-add,
+.qv-buy {
+  flex: 1;
+  padding: 14px;
+  border: none;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.qv-add {
+  background: #333;
+  color: #fff;
+}
+
+.qv-add:hover {
+  background: #000;
+}
+
+.qv-buy {
+  background: #000;
+  color: #fff;
+}
+
+.qv-buy:hover {
+  background: #111;
+}
+
+/* DESCRIPTION */
+
+.qv-description {
+  font-size: 14px;
+  color: #555;
+  line-height: 1.7;
+}
+
+/* ======================================
+   RESPONSIVE
+====================================== */
+
+@media (max-width: 900px) {
+  .qv-container {
+    flex-direction: column;
+  }
+
+  .qv-left {
+    padding: 20px;
+  }
+
+  .qv-right {
+    padding: 25px;
+  }
+}

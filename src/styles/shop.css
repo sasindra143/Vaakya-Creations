@@ -1,0 +1,262 @@
+/* ==========================================
+   GLOBAL LAYOUT
+========================================== */
+
+.shop-layout {
+  display: flex;
+  gap: 40px;
+  padding: 40px 60px;
+  background: #f9f9f9;
+  min-height: 100vh;
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================
+   FILTER SIDEBAR
+========================================== */
+
+.filter-sidebar {
+  width: 260px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.06);
+  height: fit-content;
+  position: sticky;
+  top: 140px; /* below header */
+  transition: 0.3s ease;
+}
+
+.filter-sidebar:hover {
+  box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+}
+
+.filter-sidebar h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.filter-group {
+  margin-bottom: 25px;
+}
+
+.filter-group label {
+  font-size: 14px;
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.filter-group input[type="range"] {
+  width: 100%;
+  cursor: pointer;
+  accent-color: #000;
+}
+
+.price-value {
+  font-size: 13px;
+  color: #777;
+  margin-top: 5px;
+}
+
+/* ==========================================
+   PRODUCTS SECTION
+========================================== */
+
+.products-section {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ==========================================
+   TOP BAR
+========================================== */
+
+.shop-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.category-title {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.shop-topbar select {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  background: #fff;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.shop-topbar select:hover {
+  border-color: #000;
+  transform: translateY(-2px);
+}
+
+/* ==========================================
+   PRODUCT GRID
+========================================== */
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 30px;
+}
+
+/* ==========================================
+   EMPTY STATE
+========================================== */
+
+.empty-state {
+  margin-top: 60px;
+  text-align: center;
+  background: #fff;
+  padding: 60px 20px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+.empty-state h3 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.empty-state p {
+  color: #777;
+  font-size: 14px;
+}
+
+/* ==========================================
+   PAGINATION
+========================================== */
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 40px;
+}
+
+.pagination button {
+  padding: 8px 14px;
+  border: 1px solid #ddd;
+  background: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s ease;
+  font-size: 14px;
+}
+
+.pagination button:hover {
+  background: #000;
+  color: #fff;
+}
+
+.pagination button.active {
+  background: #000;
+  color: #fff;
+  border-color: #000;
+}
+
+/* ==========================================
+   SKELETON LOADING
+========================================== */
+
+.skeleton-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+.skeleton-image {
+  width: 100%;
+  height: 280px;
+  border-radius: 12px;
+  background: linear-gradient(
+    90deg,
+    #eeeeee 25%,
+    #dddddd 37%,
+    #eeeeee 63%
+  );
+  background-size: 400% 100%;
+  animation: shimmer 1.2s infinite;
+  margin-bottom: 15px;
+}
+
+.skeleton-text {
+  height: 15px;
+  background: #eee;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+@keyframes shimmer {
+  0% { background-position: 100% 0 }
+  100% { background-position: -100% 0 }
+}
+
+/* ==========================================
+   MODAL SAFETY SPACING
+========================================== */
+
+/* Prevent layout jump when modal opens */
+body.modal-open {
+  overflow: hidden;
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 1024px) {
+  .shop-layout {
+    padding: 30px;
+    gap: 25px;
+  }
+
+  .filter-sidebar {
+    width: 220px;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .shop-layout {
+    flex-direction: column;
+  }
+
+  .filter-sidebar {
+    width: 100%;
+    position: relative;
+    top: 0;
+  }
+
+  .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+
+  .products-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .shop-layout {
+    padding: 20px;
+  }
+}
