@@ -1,0 +1,315 @@
+/* =====================================================
+   GLOBAL RESET (IMPORTANT TO REMOVE WHITE SPACE)
+===================================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  overflow-x: hidden;
+}
+
+/* =====================================================
+   ROOT VARIABLES
+===================================================== */
+
+:root {
+  --vc-primary: #000;
+  --vc-secondary: #555;
+  --vc-light: #f8f8f8;
+  --vc-border: #e5e5e5;
+  --vc-shadow-soft: 0 15px 40px rgba(0,0,0,0.08);
+  --vc-shadow-strong: 0 25px 60px rgba(0,0,0,0.15);
+}
+
+/* =====================================================
+   HAMBURGER BUTTON
+===================================================== */
+
+.vc-hamburger {
+  display: none;
+  font-size: 24px;
+  padding: 14px 18px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  user-select: none;
+}
+
+.vc-hamburger:hover {
+  transform: scale(1.1);
+}
+
+/* =====================================================
+   DESKTOP NAVIGATION BAR
+===================================================== */
+
+.vc-nav {
+  width: 100%;
+  background: var(--vc-light);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  padding: 14px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  position: relative;
+}
+
+.vc-nav a {
+  text-decoration: none;
+  color: #333;
+  position: relative;
+  padding: 6px 0;
+  transition: color 0.2s ease;
+}
+
+.vc-nav a:hover {
+  color: var(--vc-primary);
+}
+
+.active-link {
+  color: var(--vc-primary);
+  font-weight: 600;
+}
+
+/* Underline animation */
+
+.vc-nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 0%;
+  height: 2px;
+  background: var(--vc-primary);
+  transition: width 0.3s ease;
+}
+
+.vc-nav a:hover::after,
+.active-link::after {
+  width: 100%;
+}
+
+.vc-nav-item {
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* =====================================================
+   MOBILE OVERLAY
+===================================================== */
+
+.vc-mobile-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(2px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 3000;
+}
+
+.vc-mobile-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* =====================================================
+   MOBILE MENU PANEL
+===================================================== */
+
+.vc-mobile-menu {
+  position: fixed;
+  top: 0;
+  left: -100%;
+  width: 280px;
+  max-width: 85%;
+  height: 100%;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  transition: left 0.35s ease;
+  z-index: 4000;
+  box-shadow: var(--vc-shadow-strong);
+  overflow-y: auto;
+}
+
+.vc-mobile-menu.open {
+  left: 0;
+}
+
+/* Mobile Header */
+
+.vc-mobile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.vc-mobile-header button {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* Mobile Links */
+
+.vc-mobile-menu a {
+  text-decoration: none;
+  color: #333;
+  padding: 14px 0;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+  transition: color 0.2s ease;
+}
+
+.vc-mobile-menu a:hover {
+  color: var(--vc-primary);
+}
+
+/* =====================================================
+   MOBILE COLLECTION ACCORDION
+===================================================== */
+
+.vc-mobile-collection-title {
+  padding: 14px 0;
+  cursor: pointer;
+  font-weight: 500;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.vc-mobile-submenu {
+  padding-left: 10px;
+  animation: fadeSlide 0.25s ease;
+}
+
+.vc-mobile-submenu p {
+  padding: 10px 0;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--vc-secondary);
+  transition: color 0.2s ease;
+}
+
+.vc-mobile-submenu p:hover {
+  color: var(--vc-primary);
+}
+
+/* =====================================================
+   MEGA MENU (DESKTOP ONLY)
+===================================================== */
+
+.vc-mega-menu {
+  position: absolute;
+  top: 50px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-15px);
+  background: #fff;
+  padding: 30px;
+  display: flex;
+  gap: 50px;
+  border-radius: 12px;
+  box-shadow: var(--vc-shadow-strong);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s ease;
+  z-index: 2000;
+  min-width: 600px;
+}
+
+.vc-mega-menu.open {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+}
+
+.vc-mega-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 140px;
+}
+
+.vc-mega-col h4 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.vc-mega-col p {
+  font-size: 13px;
+  color: var(--vc-secondary);
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.vc-mega-col p:hover {
+  color: var(--vc-primary);
+  transform: translateX(3px);
+}
+
+/* =====================================================
+   ANIMATIONS
+===================================================== */
+
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =====================================================
+   RESPONSIVE BREAKPOINTS
+===================================================== */
+
+/* Tablet */
+
+@media (max-width: 1024px) {
+
+  .vc-nav {
+    display: none;
+  }
+
+  .vc-hamburger {
+    display: block;
+  }
+
+}
+
+/* Small Mobile */
+
+@media (max-width: 480px) {
+
+  .vc-mobile-menu {
+    width: 85%;
+    padding: 20px;
+  }
+
+  .vc-mobile-menu a {
+    font-size: 13px;
+  }
+
+  .vc-mobile-header {
+    font-size: 16px;
+  }
+
+}

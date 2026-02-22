@@ -1,248 +1,182 @@
 import { useState, useEffect } from "react";
-import defaultProducts from "../data/products";
 
-const AdminProducts = () => {
+const categories = [
+  "pattu-sarees",
+  "fancy-sarees",
+  "sarees",
+  "kurtis",
+  "dresses",
+  "tops",
+  "blouses",
+  "handmade-jewellery"
+];
 
-  /* ======================================
-     STATE
-  ====================================== */
+function AdminProducts() {
+
+  const [products, setProducts] = useState([]);
 
   const [form, setForm] = useState({
     name: "",
     price: "",
-    oldPrice: "",
-    category: "dresses",
+    category: "",
     stock: "",
-    image: "",
-    description: ""
+    image: ""
   });
 
-  const [loading, setLoading] = useState(false);
+  const [preview, setPreview] = useState(null);
 
-  /* ======================================
-     INITIALIZE DATABASE (RUN ONCE)
-  ====================================== */
-
+  /* ===============================
+     LOAD PRODUCTS
+  =============================== */
   useEffect(() => {
-
-    const storedProducts =
-      JSON.parse(localStorage.getItem("products"));
-
-    if (!storedProducts || storedProducts.length === 0) {
-
-      localStorage.setItem(
-        "products",
-        JSON.stringify(defaultProducts)
-      );
-
-    }
-
+    const stored =
+      JSON.parse(localStorage.getItem("products")) || [];
+    setProducts(stored);
   }, []);
 
-  /* ======================================
-     HANDLE INPUT CHANGE
-  ====================================== */
-
-  const handleChange = (e) => {
-
-    const { name, value } = e.target;
-
-    setForm((prev) => ({
-      ...prev,
-      [name]: value
-    }));
-
+  /* ===============================
+     SAVE PRODUCTS
+  =============================== */
+  const saveProducts = (updated) => {
+    localStorage.setItem(
+      "products",
+      JSON.stringify(updated)
+    );
+    setProducts(updated);
   };
 
-  /* ======================================
+  /* ===============================
+     HANDLE INPUT CHANGE
+  =============================== */
+  const handleChange = (e) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  /* ===============================
      HANDLE IMAGE UPLOAD
-  ====================================== */
-
+  =============================== */
   const handleImageUpload = (e) => {
-
     const file = e.target.files[0];
 
     if (!file) return;
 
-    // Validate file size (Max 2MB)
-    if (file.size > 2 * 1024 * 1024) {
-      alert("Image size must be less than 2MB");
-      return;
-    }
-
     const reader = new FileReader();
 
     reader.onloadend = () => {
-
-      setForm((prev) => ({
-        ...prev,
+      setPreview(reader.result);
+      setForm({
+        ...form,
         image: reader.result
-      }));
-
+      });
     };
 
     reader.readAsDataURL(file);
-
   };
 
-  /* ======================================
-     HANDLE SUBMIT
-  ====================================== */
-
-  const handleSubmit = (e) => {
-
+  /* ===============================
+     ADD PRODUCT
+  =============================== */
+  const handleAdd = (e) => {
     e.preventDefault();
 
-    if (!form.name.trim()) {
-      alert("Product name is required");
-      return;
-    }
-
-    if (!form.price || Number(form.price) <= 0) {
-      alert("Valid price is required");
-      return;
-    }
-
-    if (!form.stock || Number(form.stock) < 0) {
-      alert("Valid stock quantity is required");
+    if (!form.category) {
+      alert("Please select category");
       return;
     }
 
     if (!form.image) {
-      alert("Please upload product image");
-      return;
-    }
-
-    setLoading(true);
-
-    const existingProducts =
-      JSON.parse(localStorage.getItem("products")) || [];
-
-    // Prevent duplicate name in same category
-    const duplicate = existingProducts.find(
-      (p) =>
-        p.name.toLowerCase() === form.name.toLowerCase() &&
-        p.category === form.category
-    );
-
-    if (duplicate) {
-      alert("Product already exists in this category");
-      setLoading(false);
+      alert("Please upload image");
       return;
     }
 
     const newProduct = {
       id: Date.now(),
-      name: form.name.trim(),
+      ...form,
       price: Number(form.price),
-      oldPrice: Number(form.oldPrice) || 0,
-      category: form.category,
-      stock: Number(form.stock),
-      image: form.image,
-      rating: (Math.random() * (5 - 4) + 4).toFixed(1),
-      description: form.description.trim()
+      stock: Number(form.stock)
     };
 
-    const updatedProducts = [
-      ...existingProducts,
-      newProduct
-    ];
-
-    localStorage.setItem(
-      "products",
-      JSON.stringify(updatedProducts)
-    );
-
-    /* ======================================
-       RESET FORM
-    ====================================== */
+    const updated = [...products, newProduct];
+    saveProducts(updated);
 
     setForm({
       name: "",
       price: "",
-      oldPrice: "",
-      category: "dresses",
+      category: "",
       stock: "",
-      image: "",
-      description: ""
+      image: ""
     });
 
-    setLoading(false);
-
-    alert("Product Added Successfully");
-
+    setPreview(null);
   };
 
-  /* ======================================
-     RENDER
-  ====================================== */
+  /* ===============================
+     DELETE PRODUCT
+  =============================== */
+  const handleDelete = (id) => {
+    const updated =
+      products.filter((p) => p.id !== id);
+    saveProducts(updated);
+  };
 
   return (
-    <div className="p-10 max-w-2xl mx-auto">
+    <div>
 
-      <h2 className="text-3xl font-bold mb-6">
-        Add Product
-      </h2>
+      <h1 className="text-2xl font-bold mb-6">
+        Manage Products
+      </h1>
 
+      {/* ================= ADD FORM ================= */}
       <form
-        onSubmit={handleSubmit}
-        className="space-y-4 bg-white p-6 shadow-md rounded"
+        onSubmit={handleAdd}
+        className="bg-white p-6 shadow rounded mb-8 grid gap-4"
       >
 
-        {/* PRODUCT NAME */}
         <input
-          type="text"
           name="name"
           placeholder="Product Name"
           value={form.name}
           onChange={handleChange}
           required
-          className="border p-3 w-full rounded"
+          className="border p-2"
         />
 
-        {/* PRICE */}
         <input
-          type="number"
           name="price"
+          type="number"
           placeholder="Price"
           value={form.price}
           onChange={handleChange}
           required
-          className="border p-3 w-full rounded"
+          className="border p-2"
         />
 
-        {/* OLD PRICE */}
-        <input
-          type="number"
-          name="oldPrice"
-          placeholder="Old Price"
-          value={form.oldPrice}
-          onChange={handleChange}
-          className="border p-3 w-full rounded"
-        />
-
-        {/* CATEGORY */}
         <select
           name="category"
           value={form.category}
           onChange={handleChange}
-          className="border p-3 w-full rounded"
+          required
+          className="border p-2"
         >
-          <option value="pattu-sarees">Pattu Sarees</option>
-          <option value="dresses">Dresses</option>
-          <option value="kurtis">Kurtis</option>
-          <option value="handmade-jewellery">Jewellery</option>
+          <option value="">Select Category</option>
+          {categories.map((cat) => (
+            <option key={cat} value={cat}>
+              {cat}
+            </option>
+          ))}
         </select>
 
-        {/* STOCK */}
         <input
-          type="number"
           name="stock"
+          type="number"
           placeholder="Stock"
           value={form.stock}
           onChange={handleChange}
           required
-          className="border p-3 w-full rounded"
+          className="border p-2"
         />
 
         {/* IMAGE UPLOAD */}
@@ -250,42 +184,79 @@ const AdminProducts = () => {
           type="file"
           accept="image/*"
           onChange={handleImageUpload}
-          required
-          className="border p-3 w-full rounded"
+          className="border p-2"
         />
 
-        {form.image && (
-          <div className="mt-2">
-            <img
-              src={form.image}
-              alt="Preview"
-              className="w-32 h-32 object-cover rounded shadow"
-            />
-          </div>
+        {/* IMAGE PREVIEW */}
+        {preview && (
+          <img
+            src={preview}
+            alt="Preview"
+            className="w-32 h-32 object-cover rounded"
+          />
         )}
 
-        {/* DESCRIPTION */}
-        <textarea
-          name="description"
-          placeholder="Description"
-          value={form.description}
-          onChange={handleChange}
-          className="border p-3 w-full rounded"
-          rows="4"
-        />
-
-        {/* SUBMIT BUTTON */}
         <button
           type="submit"
-          disabled={loading}
-          className="bg-black text-white px-6 py-3 rounded hover:bg-gray-800 transition disabled:opacity-50"
+          className="bg-black text-white p-2 rounded"
         >
-          {loading ? "Adding..." : "Add Product"}
+          Add Product
         </button>
 
       </form>
+
+      {/* ================= PRODUCT TABLE ================= */}
+      <table className="w-full bg-white shadow rounded">
+
+        <thead className="bg-gray-200">
+          <tr>
+            <th className="p-3">Image</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {products.map((product) => (
+            <tr key={product.id} className="border-t">
+
+              <td className="p-3">
+                {product.image && (
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="w-16 h-16 object-cover rounded"
+                  />
+                )}
+              </td>
+
+              <td>{product.name}</td>
+              <td>{product.category}</td>
+              <td>₹{product.price}</td>
+              <td>{product.stock}</td>
+
+              <td>
+                <button
+                  onClick={() =>
+                    handleDelete(product.id)
+                  }
+                  className="bg-red-500 text-white px-3 py-1 rounded"
+                >
+                  Delete
+                </button>
+              </td>
+
+            </tr>
+          ))}
+        </tbody>
+
+      </table>
+
     </div>
   );
-};
+}
 
 export default AdminProducts;

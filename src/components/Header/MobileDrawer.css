@@ -1,0 +1,109 @@
+/* =========================================
+   MOBILE OVERLAY (Background Blur Layer)
+========================================= */
+
+.vc-mobile-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(2px);
+  z-index: 3999;
+  animation: vcFadeIn 0.25s ease forwards;
+}
+
+/* =========================================
+   MOBILE DRAWER CONTAINER
+========================================= */
+
+.vc-mobile-drawer {
+  position: fixed;
+  top: 0;
+  left: -100%;
+  width: 280px;
+  max-width: 85%;
+  height: 100vh;
+  background: #ffffff;
+  padding: 30px 25px;
+  display: flex;
+  flex-direction: column;
+  transition: left 0.3s ease;
+  z-index: 4000;
+  box-shadow: 5px 0 25px rgba(0, 0, 0, 0.15);
+  overflow-y: auto;
+}
+
+/* OPEN STATE */
+.vc-mobile-drawer.open {
+  left: 0;
+}
+
+/* =========================================
+   CLOSE BUTTON
+========================================= */
+
+.vc-close-mobile {
+  align-self: flex-end;
+  font-size: 22px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-bottom: 30px;
+  transition: transform 0.2s ease;
+}
+
+.vc-close-mobile:hover {
+  transform: scale(1.1);
+}
+
+/* =========================================
+   MOBILE NAVIGATION
+========================================= */
+
+.vc-mobile-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.vc-mobile-nav a {
+  text-decoration: none;
+  color: #333;
+  font-size: 16px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+  transition: all 0.2s ease;
+}
+
+.vc-mobile-nav a:hover {
+  color: #000;
+  padding-left: 6px;
+}
+
+/* =========================================
+   ANIMATION
+========================================= */
+
+@keyframes vcFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* =========================================
+   RESPONSIVE TWEAKS
+========================================= */
+
+@media (max-width: 480px) {
+
+  .vc-mobile-drawer {
+    width: 240px;
+    padding: 25px 20px;
+  }
+
+  .vc-mobile-nav a {
+    font-size: 15px;
+  }
+}

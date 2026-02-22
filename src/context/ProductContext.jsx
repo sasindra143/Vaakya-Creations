@@ -1,75 +1,33 @@
-import { createContext, useContext, useState, useEffect } from "react";
-import initialProducts from "../data/products";
+import { createContext, useEffect, useState } from "react";
+import axios from "axios";
 
-const ProductContext = createContext();
+export const ProductContext = createContext();
+
+const API = "http://localhost:5000/api/products";
 
 export const ProductProvider = ({ children }) => {
 
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  /* LOAD FROM LOCAL STORAGE */
-  useEffect(() => {
-
-    const savedProducts = localStorage.getItem("products");
-
-    if (savedProducts) {
-      setProducts(JSON.parse(savedProducts));
-    } else {
-      setProducts(initialProducts);
-      localStorage.setItem(
-        "products",
-        JSON.stringify(initialProducts)
-      );
+  const fetchProducts = async () => {
+    try {
+      const res = await axios.get(API);
+      setProducts(res.data);
+    } catch (err) {
+      console.error("Error fetching products:", err);
+    } finally {
+      setLoading(false);
     }
+  };
 
+  useEffect(() => {
+    fetchProducts();
   }, []);
 
-  /* SAVE TO LOCAL STORAGE */
-  useEffect(() => {
-
-    localStorage.setItem(
-      "products",
-      JSON.stringify(products)
-    );
-
-  }, [products]);
-
-  /* ADD PRODUCT */
-  const addProduct = (product) => {
-
-    const newProduct = {
-      ...product,
-      id: Date.now(),
-      rating: 4.0
-    };
-
-    setProducts((prev) => [
-      ...prev,
-      newProduct
-    ]);
-  };
-
-  /* DELETE PRODUCT */
-  const deleteProduct = (id) => {
-    setProducts(
-      products.filter(
-        (product) => product.id !== id
-      )
-    );
-  };
-
   return (
-    <ProductContext.Provider
-      value={{
-        products,
-        addProduct,
-        deleteProduct
-      }}
-    >
+    <ProductContext.Provider value={{ products, loading, fetchProducts }}>
       {children}
     </ProductContext.Provider>
   );
 };
-
-export const useProducts = () =>
-  useContext(ProductContext);

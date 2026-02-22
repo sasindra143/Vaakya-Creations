@@ -7,11 +7,9 @@ import {
 import { useNavigate } from "react-router-dom";
 import { CartContext } from "../../context/CartContext";
 import AccountDropdown from "./AccountDropdown";
+import "./HeaderTop.css";
 
-const HeaderTop = ({
-  onSearchOpen,
-  onMobileOpen
-}) => {
+const HeaderTop = ({ onSearchOpen }) => {
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -21,7 +19,7 @@ const HeaderTop = ({
 
   /* ==========================================
      CLOSE ACCOUNT DROPDOWN ON OUTSIDE CLICK
-  =========================================== */
+  ========================================== */
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -33,15 +31,14 @@ const HeaderTop = ({
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
   /* ==========================================
-     CART CLICK HANDLER → FULL PAGE
-  =========================================== */
+     CART CLICK HANDLER
+  ========================================== */
   const handleCartClick = () => {
     navigate("/cart");
   };
@@ -49,20 +46,12 @@ const HeaderTop = ({
   return (
     <div className="vc-header-top">
 
-      {/* MOBILE MENU */}
-      <button
-        className="vc-mobile-menu-btn"
-        onClick={onMobileOpen}
-      >
-        ☰
-      </button>
-
       {/* SEARCH */}
       <button
         className="vc-search-icon"
         onClick={onSearchOpen}
       >
-        🔍
+        
       </button>
 
       {/* LOGO */}
@@ -91,9 +80,7 @@ const HeaderTop = ({
         {/* ACCOUNT */}
         <div
           className="vc-account"
-          onClick={() =>
-            setDropdownOpen((prev) => !prev)
-          }
+          onClick={() => setDropdownOpen(prev => !prev)}
         >
           <div className="vc-account-text">
             <span>Hello, sign in</span>
@@ -107,10 +94,8 @@ const HeaderTop = ({
         <div
           className="vc-cart"
           onClick={handleCartClick}
-          style={{ cursor: "pointer", position: "relative" }}
         >
           👜
-
           {cartItems.length > 0 && (
             <span className="vc-cart-count">
               {cartItems.length}
@@ -119,6 +104,7 @@ const HeaderTop = ({
         </div>
 
       </div>
+
     </div>
   );
 };

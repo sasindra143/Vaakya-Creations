@@ -1,421 +1,81 @@
-/* =========================================
-   ROOT VARIABLES (Professional Scaling)
-========================================= */
-:root {
-  --vc-primary: #000;
-  --vc-secondary: #555;
-  --vc-light: #f5f5f5;
-  --vc-border: #e5e5e5;
-  --vc-shadow-soft: 0 20px 50px rgba(0,0,0,0.08);
-  --vc-shadow-strong: 0 25px 60px rgba(0,0,0,0.15);
+/* ==========================================================
+   GLOBAL RESET (REMOVE ALL DEFAULT SPACE)
+========================================================== */
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
 }
 
-/* =========================================
-   GLOBAL HEADER WRAPPER
-========================================= */
+#root {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+/* ==========================================================
+   HEADER HEIGHT VARIABLE (IMPORTANT FOR HERO FIX)
+========================================================== */
+
+:root {
+  --vc-header-height: 130px;   /* Adjust if needed */
+}
+
+/* ==========================================================
+   HEADER ROOT WRAPPER
+========================================================== */
+
 .vc-header {
   width: 100%;
-  background: #ffffff;
+  height: var(--vc-header-height);
+
   position: sticky;
   top: 0;
   z-index: 2000;
-  border-bottom: 1px solid var(--vc-border);
-  transition: all 0.3s ease;
-}
 
-/* =========================================
-   TOP HEADER SECTION
-========================================= */
-.vc-header-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 18px 70px;
-  transition: padding 0.3s ease;
-}
-
-/* =========================================
-   SEARCH ICON
-========================================= */
-.vc-search-icon {
-  font-size: 24px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  transition: transform 0.2s ease, opacity 0.2s ease;
-}
-
-.vc-search-icon:hover {
-  transform: scale(1.15);
-  opacity: 0.7;
-}
-
-/* =========================================
-   LOGO SECTION
-========================================= */
-.vc-logo-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-}
-
-.vc-logo-img {
-  height: 60px;
-  object-fit: contain;
-  transition: transform 0.3s ease;
-}
-
-.vc-logo-img:hover {
-  transform: scale(1.05);
-}
-
-.vc-logo-text h1 {
-  font-size: 22px;
-  font-weight: 600;
-  margin: 0;
-  letter-spacing: 0.6px;
-}
-
-.vc-logo-text span {
-  font-size: 12px;
-  color: var(--vc-secondary);
-  letter-spacing: 0.5px;
-}
-
-/* =========================================
-   RIGHT SECTION
-========================================= */
-.vc-right {
-  display: flex;
-  align-items: center;
-  gap: 35px;
-}
-
-/* =========================================
-   ACCOUNT SECTION
-========================================= */
-.vc-account {
-  position: relative;
-  cursor: pointer;
-  transition: opacity 0.2s ease;
-}
-
-.vc-account:hover {
-  opacity: 0.7;
-}
-
-.vc-account-text span {
-  display: block;
-  font-size: 13px;
-  margin-bottom: 4px;
-}
-
-.vc-account-text strong {
-  font-size: 15px;
-  font-weight: 600;
-}
-
-/* =========================================
-   ACCOUNT DROPDOWN
-========================================= */
-.vc-dropdown {
-  position: absolute;
-  top: 65px;
-  right: 0;
   background: #ffffff;
-  width: 210px;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: var(--vc-shadow-soft);
+
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  animation: fadeSlide 0.25s ease;
-  z-index: 3000;
-}
-
-.vc-btn-primary {
-  background: var(--vc-primary);
-  color: #fff;
-  padding: 11px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  font-weight: 500;
-  transition: background 0.2s ease;
-}
-
-.vc-btn-primary:hover {
-  background: #222;
-}
-
-.vc-btn-outline {
-  background: #fff;
-  border: 1px solid var(--vc-primary);
-  padding: 11px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.2s ease;
-}
-
-.vc-btn-outline:hover {
-  background: #f3f3f3;
-}
-
-/* =========================================
-   CART
-========================================= */
-.vc-cart {
-  position: relative;
-  font-size: 22px;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-
-.vc-cart:hover {
-  transform: scale(1.1);
-}
-
-.vc-cart-count {
-  position: absolute;
-  top: -8px;
-  right: -10px;
-  background: var(--vc-primary);
-  color: #fff;
-  font-size: 11px;
-  padding: 3px 7px;
-  border-radius: 50%;
-}
-
-/* =========================================
-   NAVIGATION BAR
-========================================= */
-.vc-nav {
-  background: var(--vc-light);
-  display: flex;
   justify-content: center;
-  align-items: center;
-  gap: 45px;
-  padding: 15px 0;
-  font-size: 15px;
-  font-weight: 500;
+
+  margin: 0;
+  padding: 0;
+
+  line-height: normal;
+
+  isolation: isolate;
 }
 
-.vc-nav a {
-  text-decoration: none;
-  color: #333;
-  position: relative;
-  transition: all 0.2s ease;
-}
+/* Remove spacing from children */
 
-.vc-nav a::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -4px;
-  width: 0%;
-  height: 2px;
-  background: var(--vc-primary);
-  transition: width 0.3s ease;
-}
-
-.vc-nav a:hover::after {
+.vc-header > * {
   width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
-.vc-nav-item {
-  position: relative;
-  cursor: pointer;
+/* ==========================================================
+   OPTIONAL SHADOW ON SCROLL
+========================================================== */
+
+.vc-header-scrolled {
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08);
 }
 
-/* =========================================
-   MEGA MENU
-========================================= */
-.vc-mega-menu {
-  position: absolute;
-  top: 50px;
-  left: 0;
-  background: #fff;
-  padding: 35px;
-  display: flex;
-  gap: 60px;
-  border-radius: 15px;
-  box-shadow: var(--vc-shadow-strong);
-  opacity: 0;
-  transform: translateY(-15px);
-  pointer-events: none;
-  transition: all 0.3s ease;
+/* ==========================================================
+   FADE IN ANIMATION
+========================================================== */
+
+.vc-header {
+  animation: vcHeaderFade 0.35s ease forwards;
 }
 
-.vc-mega-menu.open {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-
-.vc-mega-menu div {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.vc-mega-menu h4 {
-  font-size: 15px;
-  font-weight: 600;
-  margin-bottom: 10px;
-}
-
-.vc-mega-menu a {
-  font-size: 14px;
-  color: var(--vc-secondary);
-  text-decoration: none;
-  transition: all 0.2s ease;
-}
-
-.vc-mega-menu a:hover {
-  color: var(--vc-primary);
-  transform: translateX(4px);
-}
-
-/* =========================================
-   SEARCH OVERLAY
-========================================= */
-.vc-search-overlay {
-  position: fixed;
-  inset: 0;
-  background: #fff;
-  z-index: 5000;
-  padding: 50px 70px;
-  animation: fadeIn 0.2s ease;
-}
-
-.vc-search-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-}
-
-.vc-search-input-wrapper {
-  position: relative;
-  flex: 1;
-}
-
-.vc-search-input {
-  width: 100%;
-  padding: 18px 22px;
-  font-size: 16px;
-  border: 2px solid #333;
-  border-radius: 12px;
-  outline: none;
-  transition: box-shadow 0.3s ease;
-}
-
-.vc-search-input:focus {
-  box-shadow: 0 0 0 4px rgba(0,0,0,0.1);
-}
-
-.vc-clear-btn {
-  position: absolute;
-  right: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: #eee;
-  border: none;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.vc-search-btn {
-  background: #333;
-  color: #fff;
-  padding: 18px 35px;
-  font-size: 15px;
-  border-radius: 12px;
-  border: none;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-.vc-search-btn:hover {
-  background: #000;
-}
-
-.vc-close-btn {
-  background: #333;
-  color: #fff;
-  padding: 18px 22px;
-  border-radius: 12px;
-  border: none;
-  cursor: pointer;
-}
-
-/* =========================================
-   MOBILE DRAWER
-========================================= */
-.vc-mobile-menu-btn {
-  display: none;
-  font-size: 24px;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-.vc-mobile-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.3);
-  z-index: 3500;
-  animation: fadeIn 0.2s ease;
-}
-
-.vc-mobile-drawer {
-  position: fixed;
-  top: 0;
-  left: -100%;
-  width: 280px;
-  height: 100%;
-  background: #fff;
-  padding: 30px;
-  transition: left 0.3s ease;
-  z-index: 4000;
-  overflow-y: auto;
-  box-shadow: 5px 0 20px rgba(0,0,0,0.1);
-}
-
-.vc-mobile-drawer.open {
-  left: 0;
-}
-
-.vc-close-mobile {
-  font-size: 22px;
-  background: none;
-  border: none;
-  margin-bottom: 25px;
-  cursor: pointer;
-}
-
-.vc-mobile-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.vc-mobile-nav a {
-  text-decoration: none;
-  color: #333;
-  font-size: 15px;
-}
-
-/* =========================================
-   ANIMATIONS
-========================================= */
-@keyframes fadeSlide {
+@keyframes vcHeaderFade {
   from {
     opacity: 0;
-    transform: translateY(15px);
+    transform: translateY(-6px);
   }
   to {
     opacity: 1;
@@ -423,145 +83,44 @@
   }
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+/* ==========================================================
+   FORCE REMOVE GAP BELOW HEADER
+========================================================== */
+
+.vc-header + * {
+  margin-top: 0 !important;
 }
 
-/* =========================================
-   RESPONSIVE
-========================================= */
+/* ==========================================================
+   RESPONSIVE HEADER HEIGHT
+========================================================== */
+
 @media (max-width: 1024px) {
-  .vc-header-top {
-    padding: 16px 30px;
+  :root {
+    --vc-header-height: 120px;
   }
 
-  .vc-nav {
-    gap: 25px;
-    font-size: 14px;
+  .vc-header {
+    font-size: 15px;
   }
 }
 
 @media (max-width: 768px) {
-  .vc-nav {
-    display: none;
+  :root {
+    --vc-header-height: 110px;
   }
 
-  .vc-mobile-menu-btn {
-    display: block;
-  }
-
-  .vc-logo-img {
-    height: 45px;
-  }
-
-  .vc-logo-text h1 {
-    font-size: 18px;
+  .vc-header {
+    font-size: 14px;
   }
 }
 
-
-/* =====================================================
-   ADVANCED SEARCH SYSTEM ADDITIONS
-===================================================== */
-
-/* SEARCH CONTAINER ANIMATION */
-.vc-search-overlay {
-  animation: searchFadeIn 0.25s ease forwards;
-}
-
-@keyframes searchFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-15px);
+@media (max-width: 480px) {
+  :root {
+    --vc-header-height: 95px;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  .vc-header {
+    font-size: 13px;
   }
 }
-
-/* SEARCH DROPDOWN CONTAINER */
-.vc-search-dropdown {
-  position: absolute;
-  top: 70px;
-  left: 0;
-  width: 100%;
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: var(--vc-shadow-strong);
-  max-height: 420px;
-  overflow-y: auto;
-  z-index: 6000;
-  padding: 15px 0;
-  animation: fadeSlide 0.2s ease;
-}
-
-/* SEARCH SUGGESTION ITEM */
-.vc-search-suggestion {
-  padding: 12px 22px;
-  cursor: pointer;
-  font-size: 15px;
-  transition: background 0.2s ease;
-}
-
-.vc-search-suggestion:hover,
-.vc-search-suggestion.active {
-  background: #f3f3f3;
-}
-
-/* SEARCH RESULT CARD */
-.vc-search-result-card {
-  display: flex;
-  gap: 15px;
-  padding: 14px 22px;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-.vc-search-result-card:hover,
-.vc-search-result-card.active {
-  background: #f5f5f5;
-}
-
-.vc-search-result-image {
-  width: 60px;
-  height: 70px;
-  border-radius: 8px;
-  object-fit: cover;
-}
-
-.vc-search-result-content {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.vc-search-result-title {
-  font-size: 14px;
-  font-weight: 500;
-  margin-bottom: 4px;
-}
-
-.vc-search-result-price {
-  font-size: 13px;
-  color: var(--vc-secondary);
-}
-
-/* LOADING STATE */
-.vc-search-loading {
-  padding: 20px;
-  text-align: center;
-  font-size: 14px;
-  color: var(--vc-secondary);
-}
-
-/* NO RESULTS */
-.vc-search-empty {
-  padding: 20px;
-  text-align: center;
-  font-size: 14px;
-  color: var(--vc-secondary);
-}
-
-

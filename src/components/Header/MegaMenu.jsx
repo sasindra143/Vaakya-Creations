@@ -1,7 +1,10 @@
+import "./MegaMenu.css";
+
 const MegaMenu = ({ open, onCategoryClick }) => {
   return (
     <div className={`vc-mega-menu ${open ? "open" : ""}`}>
 
+      {/* ================= SAREES ================= */}
       <div className="vc-mega-col">
         <h4>Sarees</h4>
 
@@ -18,6 +21,7 @@ const MegaMenu = ({ open, onCategoryClick }) => {
         </p>
       </div>
 
+      {/* ================= CLOTHING ================= */}
       <div className="vc-mega-col">
         <h4>Clothing</h4>
 
@@ -32,8 +36,13 @@ const MegaMenu = ({ open, onCategoryClick }) => {
         <p onClick={() => onCategoryClick("tops")}>
           Tops
         </p>
+
+        <p onClick={() => onCategoryClick("blouses")}>
+          Blouses
+        </p>
       </div>
 
+      {/* ================= JEWELLERY ================= */}
       <div className="vc-mega-col">
         <h4>Jewellery</h4>
 

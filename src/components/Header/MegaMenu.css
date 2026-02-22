@@ -1,0 +1,110 @@
+/* =========================================
+   MEGA MENU CONTAINER
+========================================= */
+
+.vc-mega-menu {
+  position: absolute;
+  top: 55px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  background: #ffffff;
+  padding: 40px 50px;
+  display: flex;
+  gap: 70px;
+  border-radius: 18px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.12);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s ease;
+  min-width: 650px;
+  z-index: 3000;
+}
+
+/* OPEN STATE */
+.vc-mega-menu.open {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+}
+
+/* =========================================
+   COLUMN STRUCTURE
+========================================= */
+
+.vc-mega-col {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 160px;
+}
+
+/* COLUMN TITLE */
+.vc-mega-col h4 {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #111;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* CATEGORY ITEM */
+.vc-mega-col p {
+  font-size: 14px;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  position: relative;
+  padding-left: 0;
+}
+
+/* HOVER EFFECT */
+.vc-mega-col p:hover {
+  color: #000;
+  transform: translateX(6px);
+}
+
+/* Subtle underline animation */
+.vc-mega-col p::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  width: 0%;
+  height: 1.5px;
+  background: #000;
+  transition: width 0.3s ease;
+}
+
+.vc-mega-col p:hover::after {
+  width: 50%;
+}
+
+/* =========================================
+   RESPONSIVE DESIGN
+========================================= */
+
+@media (max-width: 1024px) {
+  .vc-mega-menu {
+    min-width: 550px;
+    gap: 40px;
+    padding: 30px 35px;
+  }
+}
+
+@media (max-width: 900px) {
+  .vc-mega-menu {
+    position: static;
+    transform: none;
+    flex-direction: column;
+    gap: 25px;
+    min-width: 100%;
+    box-shadow: none;
+    border-radius: 0;
+    padding: 20px;
+  }
+
+  .vc-mega-menu.open {
+    transform: none;
+  }
+}

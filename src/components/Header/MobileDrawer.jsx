@@ -1,3 +1,5 @@
+import "./MobileDrawer.css";
+
 const MobileDrawer = ({ open, onClose }) => {
   return (
     <div className={`vc-mobile-drawer ${open ? "open" : ""}`}>

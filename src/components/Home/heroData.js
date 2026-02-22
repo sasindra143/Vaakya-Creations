@@ -53,7 +53,7 @@ const heroSlides = [
     id: 6,
     title: "Modern Dresses & Tops",
     subtitle: "Trend Forward Fashion",
-    image: "https://images.pexels.com/photos/2769274/pexels-photo-2769274.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&dpr=2",
+    image: "",
     alt: "Stylish woman wearing trendy modern dress and contemporary outfit",
     category: "modern-wear"
   },
