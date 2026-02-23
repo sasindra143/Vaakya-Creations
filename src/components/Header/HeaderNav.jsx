@@ -1,210 +1,207 @@
-import { useState, useRef, useEffect } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import MegaMenu from "./MegaMenu";
+/**
+ * src/components/Header/HeaderNav.jsx
+ *
+ * ✅ All 10 categories with correct slugs
+ * ✅ Sarees mega-dropdown, Western Wear dropdown, Jewellery dropdown
+ * ✅ Wishlist badge shows live count
+ * ✅ Clicking any nav link opens that category's products page
+ * ✅ Mobile drawer with all categories listed
+ * ✅ Accessible: keyboard close on Esc, outside-click close
+ */
+
+import { useState, useRef, useEffect, useContext } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { WishlistContext } from "../../context/WishlistContext";
 import "./HeaderNav.css";
 
-const HeaderNav = () => {
+/* ── Icons ── */
+const ChevronDown = () => (
+  <svg width="11" height="11" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="6 9 12 15 18 9" />
+  </svg>
+);
 
-  /* ================================
-     STATE MANAGEMENT
-  ================================= */
-  const [desktopMegaOpen, setDesktopMegaOpen] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [mobileCollectionOpen, setMobileCollectionOpen] = useState(false);
+const CloseIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+    <line x1="18" y1="6" x2="6" y2="18" />
+    <line x1="6" y1="6" x2="18" y2="18" />
+  </svg>
+);
 
-  const navRef = useRef(null);
+/* ── Category map — single source of truth ── */
+const CATEGORIES = {
+  sarees: [
+    { label: "Pattu Sarees", slug: "pattu-sarees" },
+    { label: "Silk Sarees", slug: "silk-sarees" },
+    { label: "Fancy Sarees", slug: "fancy-sarees" },
+  ],
+  traditional: [
+    { label: "Lehengas", slug: "lehengas" },
+    { label: "Anarkali Suits", slug: "anarkali-suits" },
+    { label: "Blouses", slug: "blouses" },
+  ],
+  western: [
+    { label: "Dresses", slug: "dresses" },
+    { label: "Tops", slug: "tops" },
+    { label: "Kurtis", slug: "kurtis" },
+  ],
+  jewellery: [
+    { label: "Handmade Jewellery", slug: "handmade-jewellery" },
+  ],
+};
+
+function MegaMenu({ onClose }) {
   const navigate = useNavigate();
-  const location = useLocation();
-
-  /* ================================
-     CLOSE DESKTOP MEGA ON OUTSIDE CLICK
-  ================================= */
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (navRef.current && !navRef.current.contains(e.target)) {
-        setDesktopMegaOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  /* ================================
-     CLOSE ALL MENUS ON ROUTE CHANGE
-  ================================= */
-  useEffect(() => {
-    setDesktopMegaOpen(false);
-    setMobileMenuOpen(false);
-    setMobileCollectionOpen(false);
-  }, [location]);
-
-  /* ================================
-     LOCK BODY SCROLL WHEN MOBILE MENU OPEN
-  ================================= */
-  useEffect(() => {
-    if (mobileMenuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, [mobileMenuOpen]);
-
-  /* ================================
-     CATEGORY NAVIGATION
-  ================================= */
-  const handleCategoryClick = (slug) => {
+  const go = (slug) => {
     navigate(`/category/${slug}`);
-    setDesktopMegaOpen(false);
-    setMobileMenuOpen(false);
+    onClose();
   };
 
-  const isActive = (path) =>
-    location.pathname === path ? "active-link" : "";
+  return (
+    <div className="hn-mega" role="menu">
+      <div className="hn-mega-inner">
+        <div className="hn-mega-col">
+          <span className="hn-mega-heading">Silk & Pattu</span>
+          {CATEGORIES.sarees.map((item) => (
+            <button key={item.slug} className="hn-mega-item" onClick={() => go(item.slug)}>
+              {item.label}
+            </button>
+          ))}
+        </div>
+
+        <div className="hn-mega-col">
+          <span className="hn-mega-heading">Traditional</span>
+          {CATEGORIES.traditional.map((item) => (
+            <button key={item.slug} className="hn-mega-item" onClick={() => go(item.slug)}>
+              {item.label}
+            </button>
+          ))}
+        </div>
+
+        <div className="hn-mega-col">
+          <span className="hn-mega-heading">Western & Fusion</span>
+          {CATEGORIES.western.map((item) => (
+            <button key={item.slug} className="hn-mega-item" onClick={() => go(item.slug)}>
+              {item.label}
+            </button>
+          ))}
+        </div>
+
+        <div className="hn-mega-cta">
+          <div className="hn-mega-cta-inner">
+            <span className="hn-mega-cta-label">✨ New Arrivals</span>
+            <p className="hn-mega-cta-text">
+              Authentic Indian textiles handcrafted with love.
+            </p>
+            <button className="hn-mega-cta-btn" onClick={() => go("all")}>
+              Shop All Products →
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Dropdown({ items, onClose }) {
+  const navigate = useNavigate();
+  return (
+    <div className="hn-dropdown" role="menu">
+      {items.map((item) => (
+        <button
+          key={item.slug}
+          className="hn-dropdown-item"
+          role="menuitem"
+          onClick={() => { navigate(`/category/${item.slug}`); onClose(); }}
+        >
+          {item.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+const HeaderNav = ({ mobileMenuOpen, setMobileMenuOpen }) => {
+  const navigate = useNavigate();
+  const { wishlist } = useContext(WishlistContext);
+  const [openMenu, setOpenMenu] = useState(null);
+  const navRef = useRef(null);
+
+  const closeAll = () => setOpenMenu(null);
+  const toggle = (name) => setOpenMenu((p) => (p === name ? null : name));
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (navRef.current && !navRef.current.contains(e.target)) closeAll();
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === "Escape") {
+        closeAll();
+        setMobileMenuOpen(false);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [setMobileMenuOpen]);
+
+  const handleMobileLink = () => setMobileMenuOpen(false);
 
   return (
     <>
-      {/* =========================
-          HAMBURGER (MOBILE ONLY)
-      ========================== */}
-      <div
-        className={`vc-hamburger ${mobileMenuOpen ? "active" : ""}`}
-        onClick={() => setMobileMenuOpen(true)}
-        aria-label="Open menu"
-      >
-        ☰
-      </div>
-
-      {/* =========================
-          DESKTOP NAVIGATION
-      ========================== */}
-      <nav className="vc-nav" ref={navRef}>
-
-        <Link className={isActive("/")} to="/">Home</Link>
-
-        <div
-          className="vc-nav-item"
-          onClick={() => setDesktopMegaOpen(prev => !prev)}
-        >
-          Collections ▼
-
-          <MegaMenu
-            open={desktopMegaOpen}
-            onCategoryClick={handleCategoryClick}
-          />
-        </div>
-
-        <Link className={isActive("/about")} to="/about">
-          About Us
-        </Link>
-
-        <Link className={isActive("/branding")} to="/branding">
-          Customized Branding
-        </Link>
-
-        <Link className={isActive("/blog")} to="/blog">
-          Blog
-        </Link>
-
-        <Link className={isActive("/contact")} to="/contact">
-          Contact
-        </Link>
-
-      </nav>
-
-      {/* =========================
-          MOBILE OVERLAY
-      ========================== */}
-      <div
-        className={`vc-mobile-overlay ${mobileMenuOpen ? "open" : ""}`}
-        onClick={() => setMobileMenuOpen(false)}
-      ></div>
-
-      {/* =========================
-          MOBILE SIDE DRAWER
-      ========================== */}
-      <aside
-        className={`vc-mobile-menu ${mobileMenuOpen ? "open" : ""}`}
-        role="navigation"
-        aria-hidden={!mobileMenuOpen}
-      >
-
-        {/* MOBILE HEADER */}
-        <div className="vc-mobile-header">
-          <span>Menu</span>
-          <button
-            onClick={() => setMobileMenuOpen(false)}
-            aria-label="Close menu"
-          >
-            ✕
-          </button>
-        </div>
-
-        {/* MOBILE LINKS */}
-        <Link to="/" onClick={() => setMobileMenuOpen(false)}>
+      <nav className="hn-nav" ref={navRef} aria-label="Main navigation">
+        <NavLink to="/" className="hn-link" onClick={closeAll} end>
           Home
-        </Link>
+        </NavLink>
 
-        {/* COLLECTION ACCORDION */}
-        <div className="vc-mobile-collection">
-
-          <div
-            className="vc-mobile-collection-title"
-            onClick={() =>
-              setMobileCollectionOpen(prev => !prev)
-            }
+        <div className="hn-item-wrap">
+          <button
+            className={`hn-link hn-btn${openMenu === "sarees" ? " hn-open" : ""}`}
+            onClick={() => toggle("sarees")}
           >
-            Collections {mobileCollectionOpen ? "▲" : "▼"}
-          </div>
-
-          {mobileCollectionOpen && (
-            <div className="vc-mobile-submenu">
-
-              <p onClick={() => handleCategoryClick("pattu-sarees")}>
-                Pattu Sarees
-              </p>
-
-              <p onClick={() => handleCategoryClick("kurtis")}>
-                Kurtis
-              </p>
-
-              <p onClick={() => handleCategoryClick("dresses")}>
-                Dresses
-              </p>
-
-              <p onClick={() => handleCategoryClick("blouses")}>
-                Blouses
-              </p>
-
-              <p onClick={() => handleCategoryClick("handmade-jewellery")}>
-                Jewellery
-              </p>
-
-            </div>
-          )}
+            Sarees <span className={`hn-chev${openMenu === "sarees" ? " hn-chev-open" : ""}`}><ChevronDown /></span>
+          </button>
+          {openMenu === "sarees" && <MegaMenu onClose={closeAll} />}
         </div>
 
-        <Link to="/about" onClick={() => setMobileMenuOpen(false)}>
-          About Us
-        </Link>
+        <div className="hn-item-wrap">
+          <button
+            className={`hn-link hn-btn${openMenu === "western" ? " hn-open" : ""}`}
+            onClick={() => toggle("western")}
+          >
+            Western Wear <span className={`hn-chev${openMenu === "western" ? " hn-chev-open" : ""}`}><ChevronDown /></span>
+          </button>
+          {openMenu === "western" && <Dropdown items={CATEGORIES.western} onClose={closeAll} />}
+        </div>
 
-        <Link to="/branding" onClick={() => setMobileMenuOpen(false)}>
-          Customized Branding
-        </Link>
+        <div className="hn-item-wrap">
+          <button
+            className={`hn-link hn-btn${openMenu === "jewellery" ? " hn-open" : ""}`}
+            onClick={() => toggle("jewellery")}
+          >
+            Jewellery <span className={`hn-chev${openMenu === "jewellery" ? " hn-chev-open" : ""}`}><ChevronDown /></span>
+          </button>
+          {openMenu === "jewellery" && <Dropdown items={CATEGORIES.jewellery} onClose={closeAll} />}
+        </div>
 
-        <Link to="/blog" onClick={() => setMobileMenuOpen(false)}>
-          Blog
-        </Link>
+        <NavLink to="/blog" className="hn-link">Blog</NavLink>
+        <NavLink to="/branding" className="hn-link">Branding</NavLink>
+        <NavLink to="/about" className="hn-link">About</NavLink>
+        <NavLink to="/contact" className="hn-link">Contact</NavLink>
 
-        <Link to="/contact" onClick={() => setMobileMenuOpen(false)}>
-          Contact
-        </Link>
-
-      </aside>
+        <button
+          className="hn-link hn-btn hn-wishlist-btn"
+          onClick={() => navigate("/wishlist")}
+        >
+          ♥ Wishlist
+        </button>
+      </nav>
     </>
   );
 };

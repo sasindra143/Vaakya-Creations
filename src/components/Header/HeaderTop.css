@@ -1,301 +1,453 @@
-/* =========================================
-   ROOT VARIABLES
-========================================= */
-
+/* ==========================================================
+   CSS VARIABLES (shared with other header components)
+   Add these to your global :root if not already present
+========================================================== */
 :root {
-  --vc-primary: #000;
-  --vc-secondary: #666;
-  --vc-border: #e5e5e5;
+  --vc-primary:       #1a1a1a;
+  --vc-secondary:     #4a3728;
+  --vc-accent:        #c9a96e;
+  --vc-accent-light:  #e8d5b5;
+  --vc-bg:            #ffffff;
+  --vc-bg-soft:       #faf9f7;
+  --vc-border:        #e8e2d9;
+  --vc-text:          #2c2c2c;
+  --vc-text-muted:    #6b6560;
+  --vc-shadow-sm:     0 2px 12px rgba(0, 0, 0, 0.06);
+  --vc-shadow-md:     0 8px 32px rgba(0, 0, 0, 0.10);
+  --vc-shadow-lg:     0 20px 60px rgba(0, 0, 0, 0.15);
+  --vc-transition:    0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --vc-radius:        8px;
 }
 
-/* =========================================
-   HEADER TOP WRAPPER
-========================================= */
 
+/* ==========================================================
+   ANNOUNCEMENT STRIP
+========================================================== */
+.vc-top-strip {
+  width: 100%;
+  background: var(--vc-primary);
+  color: var(--vc-accent-light);
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 8px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.vc-strip-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--vc-accent);
+  flex-shrink: 0;
+  opacity: 0.8;
+}
+
+.vc-strip-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: calc(100% - 32px);
+}
+
+@media (max-width: 600px) {
+  .vc-top-strip {
+    font-size: 10px;
+    letter-spacing: 0.8px;
+    padding: 6px 12px;
+  }
+
+  .vc-strip-dot { display: none; }
+}
+
+
+/* ==========================================================
+   MAIN HEADER ROW
+========================================================== */
 .vc-header-top {
   width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 18px 70px;
-  background: #ffffff;
+  background: var(--vc-bg);
   border-bottom: 1px solid var(--vc-border);
-  transition: all 0.3s ease;
+
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 12px;
+
+  padding: 14px 28px;
+  min-height: 76px;
+
+  transition: padding var(--vc-transition);
 }
 
-/* =========================================
-   MOBILE MENU BUTTON
-========================================= */
+@media (max-width: 768px) {
+  .vc-header-top {
+    padding: 10px 16px;
+    min-height: 64px;
+    gap: 8px;
+  }
+}
 
+@media (max-width: 480px) {
+  .vc-header-top {
+    padding: 8px 12px;
+    min-height: 58px;
+  }
+}
+
+
+/* ==========================================================
+   LEFT — HAMBURGER
+========================================================== */
+.vc-left-section {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* Hamburger — hidden on desktop, shown on mobile */
 .vc-mobile-menu-btn {
   display: none;
-  font-size: 24px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
   background: none;
   border: none;
   cursor: pointer;
-  transition: transform 0.2s ease;
+  padding: 6px;
+  border-radius: var(--vc-radius);
+  transition: background var(--vc-transition);
+  flex-shrink: 0;
 }
 
 .vc-mobile-menu-btn:hover {
-  transform: scale(1.1);
+  background: var(--vc-bg-soft);
 }
 
-/* =========================================
-   SEARCH ICON
-========================================= */
-
-.vc-search-icon {
-  font-size: 22px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  transition: transform 0.2s ease, opacity 0.2s ease;
+.vc-bar {
+  display: block;
+  width: 22px;
+  height: 1.8px;
+  background: var(--vc-primary);
+  border-radius: 2px;
+  transform-origin: center;
+  transition:
+    transform 0.36s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity   0.3s ease,
+    width     0.3s ease;
 }
 
-.vc-search-icon:hover {
-  transform: scale(1.15);
-  opacity: 0.7;
+/* Animated X state */
+.vc-mobile-menu-btn.active .vc-bar:nth-child(1) {
+  transform: translateY(6.8px) rotate(45deg);
+}
+.vc-mobile-menu-btn.active .vc-bar:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+.vc-mobile-menu-btn.active .vc-bar:nth-child(3) {
+  transform: translateY(-6.8px) rotate(-45deg);
 }
 
-/* =========================================
-   LOGO SECTION
-========================================= */
+@media (max-width: 1024px) {
+  .vc-mobile-menu-btn {
+    display: flex;
+  }
+}
 
+
+/* ==========================================================
+   CENTER — LOGO
+========================================================== */
 .vc-logo-wrapper {
   display: flex;
   align-items: center;
-  gap: 18px;
+  justify-content: center;
+  gap: 12px;
   cursor: pointer;
+  text-decoration: none;
+  border-radius: var(--vc-radius);
+  padding: 4px 8px;
+  transition: transform var(--vc-transition), opacity var(--vc-transition);
   user-select: none;
+  outline: none;
 }
 
+.vc-logo-wrapper:hover {
+  transform: scale(1.015);
+  opacity: 0.9;
+}
+
+.vc-logo-wrapper:focus-visible {
+  outline: 2px solid var(--vc-accent);
+  outline-offset: 2px;
+}
+
+/* Logo image */
 .vc-logo-img {
-  height: 60px;
+  width: 52px;
+  height: 52px;
   object-fit: contain;
-  transition: transform 0.3s ease;
+  flex-shrink: 0;
+  display: block;
+  transition: transform var(--vc-transition);
 }
 
-.vc-logo-img:hover {
-  transform: scale(1.05);
+.vc-logo-wrapper:hover .vc-logo-img {
+  transform: rotate(-3deg) scale(1.05);
 }
 
+/* Logo text */
 .vc-logo-text {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  align-items: flex-start;
+  gap: 2px;
 }
 
-.vc-logo-text h1 {
+.vc-logo-name {
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 22px;
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--vc-primary);
+  line-height: 1.1;
   margin: 0;
-  letter-spacing: 0.6px;
+  white-space: nowrap;
 }
 
-.vc-logo-text span {
-  font-size: 12px;
-  color: var(--vc-secondary);
-  letter-spacing: 0.5px;
+.vc-logo-tagline {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 10px;
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: 1.5px;
+  color: var(--vc-accent);
+  white-space: nowrap;
 }
 
-/* =========================================
-   RIGHT SECTION
-========================================= */
+/* Responsive logo */
+@media (max-width: 900px) {
+  .vc-logo-img { width: 42px; height: 42px; }
+  .vc-logo-name { font-size: 18px; letter-spacing: 2px; }
+  .vc-logo-tagline { font-size: 8.5px; }
+}
 
-.vc-right {
+@media (max-width: 600px) {
+  .vc-logo-wrapper { gap: 8px; }
+  .vc-logo-img { width: 36px; height: 36px; }
+  .vc-logo-name { font-size: 15px; letter-spacing: 1.5px; }
+  .vc-logo-tagline { display: none; }
+}
+
+@media (max-width: 380px) {
+  .vc-logo-img { width: 30px; height: 30px; }
+  .vc-logo-name { font-size: 13px; letter-spacing: 1px; }
+}
+
+
+/* ==========================================================
+   RIGHT — ICON SECTION
+========================================================== */
+.vc-right-section {
   display: flex;
   align-items: center;
-  gap: 35px;
-  position: relative;
+  justify-content: flex-end;
+  gap: 4px;
 }
 
-/* =========================================
-   ACCOUNT SECTION
-========================================= */
-
-.vc-account {
+/* Base icon button */
+.vc-icon-btn {
+  background: none;
+  border: none;
   cursor: pointer;
-  transition: opacity 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: var(--vc-radius);
+  color: var(--vc-text);
+  text-align: left;
+  transition:
+    background  var(--vc-transition),
+    color       var(--vc-transition),
+    transform   var(--vc-transition);
+  position: relative;
+  flex-shrink: 0;
 }
 
-.vc-account:hover {
-  opacity: 0.7;
+.vc-icon-btn:hover {
+  background: var(--vc-bg-soft);
+  color: var(--vc-accent);
+  transform: translateY(-1px);
 }
 
-.vc-account-text span {
+.vc-icon-btn:focus-visible {
+  outline: 2px solid var(--vc-accent);
+  outline-offset: 2px;
+}
+
+.vc-svg-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
   display: block;
-  font-size: 13px;
-  margin-bottom: 4px;
 }
 
-.vc-account-text strong {
-  font-size: 15px;
-  font-weight: 600;
-}
 
-/* =========================================
-   CART SECTION
-========================================= */
-
-.vc-cart {
+/* ==========================================================
+   ACCOUNT BUTTON — text labels (desktop)
+========================================================== */
+.vc-account-wrapper {
   position: relative;
-  font-size: 22px;
-  cursor: pointer;
-  transition: transform 0.2s ease;
 }
 
-.vc-cart:hover {
-  transform: scale(1.1);
+.vc-account-btn {
+  align-items: center;
 }
 
-.vc-cart-count {
+.vc-account-labels {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  line-height: 1.25;
+}
+
+.vc-account-greeting {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  color: var(--vc-text-muted);
+  white-space: nowrap;
+}
+
+.vc-account-title {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  color: var(--vc-primary);
+  white-space: nowrap;
+}
+
+/* Hide text labels below 900px, keep icon only */
+@media (max-width: 900px) {
+  .vc-account-labels { display: none; }
+}
+
+
+/* ==========================================================
+   ACCOUNT DROPDOWN WRAPPER (animated)
+========================================================== */
+.vc-account-dropdown-wrap {
   position: absolute;
-  top: -8px;
-  right: -10px;
-  background: var(--vc-primary);
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 7000;
+
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+  visibility: hidden;
+  transition:
+    opacity   0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    visibility 0.25s;
+}
+
+.vc-account-dropdown-wrap.open {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+  visibility: visible;
+}
+
+/* Caret arrow */
+.vc-account-dropdown-wrap::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  right: 20px;
+  width: 12px;
+  height: 12px;
+  background: var(--vc-bg);
+  border: 1px solid var(--vc-border);
+  border-right: none;
+  border-bottom: none;
+  transform: rotate(45deg);
+  z-index: 1;
+}
+
+
+/* ==========================================================
+   CART BUTTON
+========================================================== */
+.vc-cart-btn {
+  position: relative;
+}
+
+.vc-cart-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  min-width: 17px;
+  height: 17px;
+  background: var(--vc-accent);
   color: #fff;
-  font-size: 11px;
-  padding: 3px 7px;
-  border-radius: 50%;
+  border-radius: 999px;
+  font-size: 9px;
+  font-family: sans-serif;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
+  pointer-events: none;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+  animation: badgePop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
-/* =========================================
-   LARGE LAPTOP (1200px)
-========================================= */
-
-@media (max-width: 1200px) {
-
-  .vc-header-top {
-    padding: 18px 40px;
-  }
-
-  .vc-logo-text h1 {
-    font-size: 20px;
-  }
+@keyframes badgePop {
+  from { transform: scale(0); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
 }
 
-/* =========================================
-   SMALL LAPTOP / TABLET (1024px)
-========================================= */
 
-@media (max-width: 1024px) {
-
-  .vc-header-top {
-    padding: 16px 30px;
-  }
-
-  .vc-logo-text h1 {
-    font-size: 19px;
-  }
-
-  /* Hide tagline */
-  .vc-logo-text span {
-    display: none;
-  }
-
-  .vc-right {
-    gap: 25px;
-  }
-}
-
-/* =========================================
-   TABLET (768px)
-========================================= */
-
-@media (max-width: 768px) {
-
-  .vc-header-top {
-    padding: 14px 20px;
-  }
-
-  .vc-mobile-menu-btn {
-    display: block;
-  }
-
-  .vc-logo-img {
-    height: 45px;
-  }
-
-  .vc-logo-text h1 {
-    font-size: 17px;
-  }
-
-  .vc-logo-text span {
-    display: none;
-  }
-
-  .vc-search-icon {
-    font-size: 20px;
-  }
-
-  .vc-right {
-    gap: 18px;
-  }
-
-  .vc-account-text span {
-    display: none;
-  }
-
-  .vc-account-text strong {
-    font-size: 14px;
-  }
-}
-
-/* =========================================
-   MOBILE (480px)
-========================================= */
-
+/* ==========================================================
+   RESPONSIVE ICON SIZES
+========================================================== */
 @media (max-width: 480px) {
-
-  .vc-header-top {
-    padding: 12px 15px;
+  .vc-svg-icon {
+    width: 18px;
+    height: 18px;
   }
 
-  .vc-logo-img {
-    height: 38px;
+  .vc-icon-btn {
+    padding: 6px;
   }
 
-  .vc-logo-text h1 {
-    font-size: 15px;
-    letter-spacing: 0.5px;
-  }
-
-  .vc-logo-text span {
-    display: none;
-  }
-
-  .vc-right {
-    gap: 12px;
-  }
-
-  .vc-cart {
-    font-size: 19px;
-  }
-
-  .vc-search-icon {
-    font-size: 18px;
+  .vc-right-section {
+    gap: 2px;
   }
 }
-
-/* =========================================
-   VERY SMALL MOBILE (360px)
-========================================= */
 
 @media (max-width: 360px) {
-
-  .vc-logo-img {
-    height: 32px;
-  }
-
-  .vc-logo-text h1 {
-    font-size: 14px;
-  }
-
-  .vc-right {
-    gap: 8px;
-  }
-
-  .vc-cart {
-    font-size: 18px;
+  .vc-svg-icon {
+    width: 16px;
+    height: 16px;
   }
 }

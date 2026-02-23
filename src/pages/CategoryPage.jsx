@@ -1,234 +1,192 @@
-import { useParams } from "react-router-dom";
-import { useState, useEffect, useMemo } from "react";
+/**
+ * src/pages/CategoryPage.jsx
+ *
+ * ✅ Reads from ProductContext (admin-only products).
+ * ✅ Clicking a nav link opens this page with correct category filtered.
+ * ✅ Real-time: add/delete in admin instantly reflects here.
+ * ✅ Empty state when no products for a category.
+ */
 
-import defaultProducts from "../data/products";
-import ProductCard from "../components/Product/ProductCard";
-import ProductSkeleton from "../components/Product/ProductSkeleton";
-import FilterSidebar from "../components/Filters/FilterSidebar";
-import Pagination from "../components/Pagination/Pagination";
-import AddToCartModal from "../components/Cart/AddToCartModal";
-import QuickViewModal from "../components/QuickView/QuickViewModal";
-
+import { useParams, useNavigate }          from "react-router-dom";
+import { useState, useEffect, useMemo }    from "react";
+import { useProducts }                     from "../context/ProductContext";
+import ProductCard                         from "../components/Product/ProductCard";
+import ProductSkeleton                     from "../components/Product/ProductSkeleton";
+import FilterSidebar                       from "../components/Filters/FilterSidebar";
+import Pagination                          from "../components/Pagination/Pagination";
+import AddToCartModal                      from "../components/Cart/AddToCartModal";
+import QuickViewModal                      from "../components/QuickView/QuickViewModal";
 import "../styles/products.css";
 
-function CategoryPage() {
+const PER_PAGE = 6;
 
-  const { categoryName } = useParams();
+/* Human-readable titles for each category slug */
+const CATEGORY_TITLES = {
+  "all":                 "All Products",
+  "pattu-sarees":        "Pattu Sarees",
+  "fancy-sarees":        "Fancy Sarees",
+  "silk-sarees":         "Silk Sarees",
+  "kurtis":              "Kurtis",
+  "dresses":             "Dresses",
+  "tops":                "Tops",
+  "blouses":             "Blouses",
+  "handmade-jewellery":  "Handmade Jewellery",
+  "lehengas":            "Lehengas",
+  "anarkali-suits":      "Anarkali Suits",
+};
 
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [sort, setSort] = useState("default");
-  const [maxPrice, setMaxPrice] = useState(10000);
-  const [page, setPage] = useState(1);
+export default function CategoryPage() {
+  const { categoryName }  = useParams();
+  const navigate          = useNavigate();
 
-  const [addedProduct, setAddedProduct] = useState(null);
-  const [quickViewProduct, setQuickViewProduct] = useState(null);
+  /* ✅ Subscribe to `products` array — re-renders when admin changes anything */
+  const { products } = useProducts();
 
-  const itemsPerPage = 6;
+  const [sort,     setSort]     = useState("default");
+  const [maxPrice, setMaxPrice] = useState(50000);
+  const [page,     setPage]     = useState(1);
+  const [loading,  setLoading]  = useState(true);
+  const [cartModal,  setCartModal]  = useState(null);
+  const [quickModal, setQuickModal] = useState(null);
 
-  /* ===============================
-     DATABASE INITIALIZATION
-  =============================== */
-
+  /* Brief skeleton on category change */
   useEffect(() => {
-
-    let storedProducts =
-      JSON.parse(localStorage.getItem("products"));
-
-    if (!storedProducts) {
-
-      // First time initialize database
-      localStorage.setItem(
-        "products",
-        JSON.stringify(defaultProducts)
-      );
-
-      storedProducts = defaultProducts;
-    }
-
-    setProducts(storedProducts);
-
-  }, []);
-
-  /* ===============================
-     CATEGORY CHANGE EFFECT
-  =============================== */
-
-  useEffect(() => {
-
     setLoading(true);
     setPage(1);
     setSort("default");
-
-    const storedProducts =
-      JSON.parse(localStorage.getItem("products")) || [];
-
-    setProducts(storedProducts);
-
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 400);
-
-    return () => clearTimeout(timer);
-
+    const t = setTimeout(() => setLoading(false), 300);
+    return () => clearTimeout(t);
   }, [categoryName]);
 
-  /* ===============================
-     FILTER + SORT
-  =============================== */
+  /* ✅ `products` in deps array = recomputes on every admin add/edit/delete */
+  const filtered = useMemo(() => {
+    const slug = categoryName?.toLowerCase();
+    let list = (!slug || slug === "all")
+      ? [...products]
+      : products.filter((p) => p.category?.toLowerCase() === slug);
 
-  const filteredProducts = useMemo(() => {
+    list = list.filter((p) => Number(p.price) <= maxPrice);
 
-    if (!categoryName) return [];
+    if (sort === "price-low")  list.sort((a, b) => a.price - b.price);
+    if (sort === "price-high") list.sort((a, b) => b.price - a.price);
+    if (sort === "rating")     list.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+    if (sort === "newest")     list.sort((a, b) => (String(b.id) > String(a.id) ? 1 : -1));
 
-    let result = [...products];
+    return list;
+  }, [products, categoryName, maxPrice, sort]);
 
-    const lowerCategory =
-      categoryName.toLowerCase();
+  const totalPages = Math.ceil(filtered.length / PER_PAGE);
+  const paginated  = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
+  const isEmpty    = !loading && filtered.length === 0;
+  const allEmpty   = !loading && products.length === 0;
 
-    if (lowerCategory !== "all") {
-      result = result.filter(
-        (p) =>
-          p.category?.toLowerCase() === lowerCategory
-      );
-    }
-
-    result = result.filter(
-      (p) => p.price <= maxPrice
-    );
-
-    if (sort === "low") {
-      result.sort((a, b) => a.price - b.price);
-    }
-
-    if (sort === "high") {
-      result.sort((a, b) => b.price - a.price);
-    }
-
-    return result;
-
-  }, [categoryName, products, maxPrice, sort]);
-
-  /* ===============================
-     PAGINATION
-  =============================== */
-
-  const totalPages =
-    Math.ceil(filteredProducts.length / itemsPerPage);
-
-  const startIndex =
-    (page - 1) * itemsPerPage;
-
-  const paginatedProducts =
-    filteredProducts.slice(
-      startIndex,
-      startIndex + itemsPerPage
-    );
-
-  const isEmpty =
-    !loading && filteredProducts.length === 0;
+  const pageTitle =
+    CATEGORY_TITLES[categoryName?.toLowerCase()] ||
+    (categoryName ? categoryName.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) : "Products");
 
   return (
     <>
       <div className="shop-layout">
 
+        {/* Sidebar + sort */}
         <div className="shop-filter-wrapper">
-
           <FilterSidebar
             maxPrice={maxPrice}
-            setMaxPrice={(value) => {
-              setMaxPrice(value);
-              setPage(1);
-            }}
+            setMaxPrice={(v) => { setMaxPrice(v); setPage(1); }}
           />
-
           <div className="sort-box">
             <select
               value={sort}
-              onChange={(e) => {
-                setSort(e.target.value);
-                setPage(1);
-              }}
+              onChange={(e) => { setSort(e.target.value); setPage(1); }}
+              aria-label="Sort products"
             >
               <option value="default">Sort By</option>
-              <option value="low">Price Low → High</option>
-              <option value="high">Price High → Low</option>
+              <option value="newest">Newest First</option>
+              <option value="price-low">Price: Low → High</option>
+              <option value="price-high">Price: High → Low</option>
+              <option value="rating">Top Rated</option>
             </select>
           </div>
-
         </div>
 
+        {/* Products section */}
         <div className="products-section">
 
-          <h2 className="category-title">
-            {categoryName === "all"
-              ? "ALL PRODUCTS"
-              : categoryName
-                ? categoryName
-                    .replace(/-/g, " ")
-                    .toUpperCase()
-                : "CATEGORY"}
-          </h2>
-
-          <div className="products-grid">
-
-            {loading &&
-              Array(6).fill().map((_, i) => (
-                <ProductSkeleton key={i} />
-              ))}
-
-            {!loading &&
-              paginatedProducts.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  onAddToCart={(p) =>
-                    setAddedProduct(p)
-                  }
-                  onQuickView={(p) =>
-                    setQuickViewProduct(p)
-                  }
-                />
-              ))}
-
+          <div className="category-header">
+            <h2 className="category-title">{pageTitle}</h2>
+            {!loading && (
+              <span className="category-count">
+                {filtered.length} product{filtered.length !== 1 ? "s" : ""}
+              </span>
+            )}
           </div>
 
-          {isEmpty && (
+          <div className="products-grid">
+            {loading && Array(PER_PAGE).fill(null).map((_, i) => <ProductSkeleton key={i} />)}
+
+            {!loading && paginated.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                onAddToCart={(p) => setCartModal(p)}
+                onQuickView={(p) => setQuickModal(p)}
+              />
+            ))}
+          </div>
+
+          {/* No products in this category */}
+          {isEmpty && !allEmpty && (
             <div className="empty-state">
-              <h3>No products found</h3>
+              <div className="empty-state-icon">🔍</div>
+              <h3>No products in "{pageTitle}"</h3>
+              <p>
+                Nothing here yet. Add products in this category from the
+                Admin panel.
+              </p>
+              <button
+                className="empty-state-btn"
+                onClick={() => navigate("/category/all")}
+              >
+                Browse All Products
+              </button>
             </div>
           )}
 
+          {/* Store is completely empty */}
+          {allEmpty && (
+            <div className="empty-state">
+              <div className="empty-state-icon">🏪</div>
+              <h3>Store is empty</h3>
+              <p>
+                No products have been added yet. Visit the Admin panel to add
+                your first product.
+              </p>
+              <button
+                className="empty-state-btn"
+                onClick={() => navigate("/admin/products")}
+              >
+                Go to Admin →
+              </button>
+            </div>
+          )}
+
+          {/* Pagination */}
           {!loading && totalPages > 1 && (
             <Pagination
               totalPages={totalPages}
               currentPage={page}
-              setPage={setPage}
+              setPage={(n) => {
+                setPage(n);
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
             />
           )}
 
         </div>
       </div>
 
-      {addedProduct && (
-        <AddToCartModal
-          product={addedProduct}
-          onClose={() =>
-            setAddedProduct(null)
-          }
-        />
-      )}
-
-      {quickViewProduct && (
-        <QuickViewModal
-          product={quickViewProduct}
-          onClose={() =>
-            setQuickViewProduct(null)
-          }
-        />
-      )}
+      {cartModal  && <AddToCartModal product={cartModal}  onClose={() => setCartModal(null)}  />}
+      {quickModal && <QuickViewModal product={quickModal} onClose={() => setQuickModal(null)} />}
     </>
   );
 }
-
-export default CategoryPage;

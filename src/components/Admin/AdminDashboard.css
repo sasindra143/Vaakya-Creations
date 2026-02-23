@@ -1,0 +1,243 @@
+/* src/components/Admin/AdminDashboard.css */
+
+.ad-root {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 1200px;
+  font-family: "DM Sans", sans-serif;
+}
+
+/* Header */
+.ad-page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.ad-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: #1a1612;
+  margin: 0;
+  letter-spacing: -0.3px;
+}
+
+.ad-subtitle { font-size: 13.5px; color: #7a6555; margin: 4px 0 0; }
+
+.ad-primary-btn {
+  background: #1a1612;
+  color: #c9a96e;
+  border: none;
+  cursor: pointer;
+  font-size: 13.5px;
+  font-weight: 600;
+  padding: 11px 22px;
+  border-radius: 8px;
+  font-family: inherit;
+  letter-spacing: 0.3px;
+  transition: background 0.2s, transform 0.15s;
+  white-space: nowrap;
+}
+.ad-primary-btn:hover { background: #c9a96e; color: #000; transform: translateY(-1px); }
+
+/* Zero state */
+.ad-zero-state {
+  background: #fff;
+  border: 1px solid #ede8e0;
+  border-radius: 16px;
+  padding: 70px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+}
+.ad-zero-icon  { font-size: 60px; }
+.ad-zero-title { font-size: 22px; font-weight: 700; color: #1a1612; margin: 0; }
+.ad-zero-desc  { font-size: 14px; color: #7a6555; max-width: 420px; line-height: 1.6; margin: 0; }
+
+/* Stat cards */
+.ad-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.ad-card {
+  background: #fff;
+  border: 1px solid #ede8e0;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.ad-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.08); transform: translateY(-2px); }
+
+.ad-card-icon { font-size: 28px; flex-shrink: 0; }
+
+.ad-card-body { display: flex; flex-direction: column; gap: 2px; }
+
+.ad-card-value {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--c);
+  line-height: 1;
+}
+
+.ad-card-label { font-size: 12px; color: #7a6555; font-weight: 600; letter-spacing: 0.3px; margin-top: 4px; }
+.ad-card-sub   { font-size: 11px; color: #a89485; margin-top: 2px; }
+
+/* Two-column layout */
+.ad-two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.ad-panel {
+  background: #fff;
+  border: 1px solid #ede8e0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.ad-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px 14px;
+  border-bottom: 1px solid #f0ebe3;
+}
+
+.ad-panel-title { font-size: 14px; font-weight: 700; color: #1a1612; margin: 0; }
+
+.ad-panel-link {
+  background: none;
+  border: none;
+  color: #c9a96e;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  padding: 0;
+}
+.ad-panel-link:hover { text-decoration: underline; }
+
+.ad-empty-note { padding: 24px 20px; color: #a89485; font-size: 13px; text-align: center; font-style: italic; }
+
+/* Category chart */
+.ad-cat-list {
+  padding: 14px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ad-cat-row { display: flex; flex-direction: column; gap: 6px; }
+
+.ad-cat-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ad-cat-name  { font-size: 13px; font-weight: 600; color: #1a1612; }
+.ad-cat-count { font-size: 12px; color: #a89485; font-weight: 600; }
+
+.ad-cat-track { height: 6px; background: #f0ebe3; border-radius: 4px; overflow: hidden; }
+
+.ad-cat-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #c9a96e, #9a6a30);
+  border-radius: 4px;
+  transition: width 0.7s ease;
+}
+
+/* Recent list */
+.ad-recent-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.ad-recent-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 20px;
+  border-bottom: 1px solid #f8f4ef;
+  transition: background 0.15s;
+}
+.ad-recent-row:last-child { border-bottom: none; }
+.ad-recent-row:hover { background: #fdf8f2; }
+
+.ad-recent-thumb {
+  width: 36px;
+  height: 44px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #f5f0eb;
+  flex-shrink: 0;
+  border: 1px solid #ede8e0;
+}
+.ad-recent-thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+.ad-recent-info { flex: 1; display: flex; flex-direction: column; gap: 2px; overflow: hidden; }
+.ad-recent-name { font-size: 13px; font-weight: 600; color: #1a1612; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ad-recent-cat  { font-size: 11px; color: #a89485; text-transform: capitalize; }
+
+.ad-recent-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
+.ad-recent-price { font-size: 13px; font-weight: 700; color: #1a1612; }
+
+.ad-recent-stock {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+.s-ok  { background: #e8f5e9; color: #2e7d32; }
+.s-low { background: #fff3e0; color: #e65100; }
+.s-out { background: #fce4ec; color: #c62828; }
+
+/* Shortcuts */
+.ad-shortcuts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.ad-shortcut {
+  background: #fff;
+  border: 1px solid #ede8e0;
+  border-radius: 12px;
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: box-shadow 0.2s, transform 0.15s, border-color 0.2s;
+}
+.ad-shortcut:hover {
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  transform: translateY(-2px);
+  border-color: #c9a96e;
+}
+
+.ad-sh-icon  { font-size: 20px; }
+.ad-sh-label { flex: 1; font-size: 13.5px; font-weight: 600; color: #1a1612; text-align: left; }
+.ad-sh-arrow { font-size: 16px; color: #c9a96e; font-weight: 700; }
+
+/* Responsive */
+@media (max-width: 1100px) { .ad-cards { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 768px) {
+  .ad-two-col    { grid-template-columns: 1fr; }
+  .ad-shortcuts  { grid-template-columns: 1fr; }
+  .ad-cards      { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+}
+@media (max-width: 480px) { .ad-cards { grid-template-columns: 1fr; } }

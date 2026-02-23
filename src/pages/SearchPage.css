@@ -1,0 +1,630 @@
+/**
+ * src/pages/SearchPage.css
+ *
+ * Warm brown + gold color scheme matching the rest of Vaakya Creations.
+ * Fully responsive: desktop sidebar | tablet collapsible | mobile drawer.
+ */
+
+/* ── Color tokens ── */
+:root {
+  --sp-primary:      #2d1b12;
+  --sp-accent:       #b5651d;
+  --sp-accent2:      #d4943a;
+  --sp-accent-light: #f5ead8;
+  --sp-bg:           #ffffff;
+  --sp-bg-soft:      #fdf8f2;
+  --sp-bg-mid:       #f7efe3;
+  --sp-border:       #e8ddd0;
+  --sp-border-soft:  #f0e8dc;
+  --sp-text:         #2d1b12;
+  --sp-text-muted:   #7a6555;
+  --sp-text-light:   #a8917e;
+  --sp-radius:       6px;
+  --sp-transition:   0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  --sp-sidebar-w:    230px;
+}
+
+/* ==========================================================
+   PAGE WRAPPER
+========================================================== */
+.sp-page {
+  min-height: calc(100vh - 80px);
+  background: var(--sp-bg);
+  font-family: "Cormorant Garamond", Georgia, serif;
+}
+
+/* ==========================================================
+   HERO — dark search bar at top
+========================================================== */
+.sp-hero {
+  background: var(--sp-primary);
+  padding: 36px 28px 32px;
+}
+
+.sp-hero-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sp-hero-text {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.sp-hero-title {
+  font-size: 26px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+}
+
+.sp-hero-title em {
+  color: var(--sp-accent2);
+  font-style: italic;
+}
+
+.sp-hero-count {
+  font-size: 13px;
+  color: rgba(255,255,255,0.5);
+  font-style: italic;
+  white-space: nowrap;
+}
+
+/* Search form */
+.sp-search-form {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.sp-search-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background: var(--sp-bg-soft);
+  border: 2px solid var(--sp-border);
+  border-radius: var(--sp-radius);
+  overflow: hidden;
+  transition: border-color var(--sp-transition), box-shadow var(--sp-transition);
+  min-width: 0;
+}
+
+.sp-search-wrap:focus-within {
+  border-color: var(--sp-accent);
+  box-shadow: 0 0 0 3px rgba(181, 101, 29, 0.2);
+  background: #fff;
+}
+
+.sp-search-icon-wrap {
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  color: var(--sp-accent);
+  flex-shrink: 0;
+}
+
+.sp-search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 17px;
+  color: var(--sp-text);
+  padding: 13px 0;
+  min-width: 0;
+  -webkit-appearance: none;
+}
+
+.sp-search-input::-webkit-search-cancel-button { display: none; }
+
+.sp-search-input::placeholder {
+  color: var(--sp-text-light);
+  font-style: italic;
+}
+
+.sp-clear-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0 12px;
+  color: var(--sp-text-light);
+  display: flex;
+  align-items: center;
+  transition: color var(--sp-transition);
+  flex-shrink: 0;
+}
+
+.sp-clear-btn:hover { color: var(--sp-text); }
+
+.sp-submit-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--sp-accent);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  padding: 0 24px;
+  height: 52px;
+  border-radius: var(--sp-radius);
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background var(--sp-transition);
+}
+
+.sp-submit-btn:hover { background: var(--sp-accent2); }
+
+/* ==========================================================
+   MOBILE TOOLBAR (filter toggle row)
+========================================================== */
+.sp-mobile-toolbar {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--sp-bg-mid);
+  border-bottom: 1px solid var(--sp-border);
+}
+
+.sp-filter-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--sp-primary);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  padding: 8px 16px;
+  border-radius: var(--sp-radius);
+  transition: background var(--sp-transition);
+}
+
+.sp-filter-toggle-btn:hover { background: var(--sp-accent); }
+
+.sp-mobile-count {
+  font-size: 13px;
+  color: var(--sp-text-muted);
+  font-style: italic;
+}
+
+/* Backdrop for mobile sidebar */
+.sp-sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 10, 5, 0.5);
+  z-index: 200;
+  backdrop-filter: blur(3px);
+}
+
+/* ==========================================================
+   BODY — sidebar + main
+========================================================== */
+.sp-body {
+  display: flex;
+  max-width: 1400px;
+  margin: 0 auto;
+  align-items: flex-start;
+}
+
+/* ==========================================================
+   SIDEBAR
+========================================================== */
+.sp-sidebar {
+  width: var(--sp-sidebar-w);
+  min-width: var(--sp-sidebar-w);
+  flex-shrink: 0;
+  border-right: 1px solid var(--sp-border);
+  background: var(--sp-bg-mid);
+  min-height: calc(100vh - 160px);
+  padding: 8px 0 40px;
+  position: sticky;
+  top: 80px;         /* below fixed header */
+  align-self: flex-start;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--sp-border) transparent;
+}
+
+/* ── Filter block ── */
+.sp-filter-block {
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--sp-border-soft);
+}
+
+.sp-filter-block:last-child { border-bottom: none; }
+
+.sp-filter-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--sp-text-muted);
+  margin: 0 0 14px;
+}
+
+/* Sort radio group */
+.sp-sort-options {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sp-sort-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--sp-text-muted);
+  cursor: pointer;
+  padding: 7px 10px;
+  border-radius: 5px;
+  transition: background var(--sp-transition), color var(--sp-transition);
+}
+
+.sp-sort-option input[type="radio"] {
+  accent-color: var(--sp-accent);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.sp-sort-option:hover,
+.sp-sort-option.active {
+  background: var(--sp-accent-light);
+  color: var(--sp-primary);
+}
+
+/* Price range */
+.sp-price-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sp-range {
+  width: 100%;
+  accent-color: var(--sp-accent);
+  cursor: pointer;
+  height: 4px;
+}
+
+.sp-price-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--sp-text-muted);
+}
+
+.sp-price-labels strong {
+  color: var(--sp-accent);
+  font-weight: 700;
+}
+
+/* Category list */
+.sp-cat-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.sp-cat-btn {
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  border-left: 3px solid transparent;
+  cursor: pointer;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 14px;
+  color: var(--sp-text-muted);
+  padding: 9px 0 9px 12px;
+  text-align: left;
+  text-transform: capitalize;
+  letter-spacing: 0.2px;
+  transition:
+    color var(--sp-transition),
+    border-color var(--sp-transition),
+    background var(--sp-transition),
+    padding-left var(--sp-transition);
+}
+
+.sp-cat-btn:hover {
+  color: var(--sp-primary);
+  border-left-color: var(--sp-accent);
+  background: var(--sp-accent-light);
+  padding-left: 16px;
+}
+
+/* Reset button */
+.sp-reset-btn {
+  width: 100%;
+  background: none;
+  border: 1.5px solid var(--sp-border);
+  border-radius: var(--sp-radius);
+  cursor: pointer;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--sp-text-muted);
+  padding: 9px 16px;
+  transition: background var(--sp-transition), color var(--sp-transition), border-color var(--sp-transition);
+}
+
+.sp-reset-btn:hover {
+  background: var(--sp-primary);
+  color: #fff;
+  border-color: var(--sp-primary);
+}
+
+/* ==========================================================
+   MAIN RESULTS
+========================================================== */
+.sp-main {
+  flex: 1;
+  padding: 28px;
+  min-width: 0;
+}
+
+/* Product grid */
+.sp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+/* ==========================================================
+   EMPTY / NO RESULTS STATE
+========================================================== */
+.sp-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 64px 24px 48px;
+  gap: 14px;
+}
+
+.sp-empty-icon {
+  font-size: 56px;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.sp-empty-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--sp-text);
+  margin: 0;
+  letter-spacing: 0.3px;
+}
+
+.sp-empty-text {
+  font-size: 15px;
+  color: var(--sp-text-muted);
+  margin: 0;
+  font-style: italic;
+  max-width: 360px;
+}
+
+.sp-browse-btn {
+  background: var(--sp-primary);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 12px 30px;
+  border-radius: var(--sp-radius);
+  transition: background var(--sp-transition);
+  margin-top: 4px;
+}
+
+.sp-browse-btn:hover { background: var(--sp-accent); }
+
+/* Suggestions */
+.sp-suggestions-wrap {
+  width: 100%;
+  margin-top: 12px;
+  text-align: left;
+}
+
+.sp-suggestion-label {
+  font-size: 15px;
+  color: var(--sp-text-muted);
+  font-style: italic;
+  margin: 0 0 16px;
+  text-align: center;
+}
+
+/* Quick link chips (empty state) */
+.sp-quick-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+.sp-quick-chip {
+  background: var(--sp-bg-mid);
+  border: 1.5px solid var(--sp-border);
+  border-radius: 24px;
+  cursor: pointer;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 13.5px;
+  color: var(--sp-text-muted);
+  padding: 7px 18px;
+  transition:
+    background var(--sp-transition),
+    color var(--sp-transition),
+    border-color var(--sp-transition);
+}
+
+.sp-quick-chip:hover {
+  background: var(--sp-accent);
+  color: #fff;
+  border-color: var(--sp-accent);
+}
+
+/* ==========================================================
+   PAGINATION
+========================================================== */
+.sp-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 44px;
+  flex-wrap: wrap;
+}
+
+.sp-page-btn {
+  background: none;
+  border: 1.5px solid var(--sp-border);
+  border-radius: var(--sp-radius);
+  cursor: pointer;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 14px;
+  color: var(--sp-text-muted);
+  padding: 8px 16px;
+  min-width: 42px;
+  transition:
+    background var(--sp-transition),
+    color var(--sp-transition),
+    border-color var(--sp-transition);
+}
+
+.sp-page-btn:hover:not(:disabled) {
+  background: var(--sp-accent-light);
+  border-color: var(--sp-accent);
+  color: var(--sp-primary);
+}
+
+.sp-page-btn.active {
+  background: var(--sp-accent);
+  border-color: var(--sp-accent);
+  color: #fff;
+  font-weight: 700;
+}
+
+.sp-page-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.sp-page-arrow { letter-spacing: 0.5px; }
+
+/* ==========================================================
+   RESPONSIVE — Tablet (≤ 1024px)
+========================================================== */
+@media (max-width: 1024px) {
+  .sp-grid {
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 16px;
+  }
+
+  .sp-sidebar { width: 200px; min-width: 200px; }
+  .sp-main { padding: 20px; }
+  .sp-hero { padding: 28px 20px 24px; }
+}
+
+/* ==========================================================
+   RESPONSIVE — Mobile (≤ 900px)
+   Sidebar becomes a slide-in drawer
+========================================================== */
+@media (max-width: 900px) {
+
+  .sp-mobile-toolbar { display: flex; }
+
+  .sp-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    max-width: 85vw;
+    height: 100dvh;
+    min-height: unset;
+    z-index: 300;
+    border-right: 1px solid var(--sp-border);
+    box-shadow: 4px 0 24px rgba(0,0,0,0.15);
+    overflow-y: auto;
+    padding-top: 20px;
+
+    /* Hidden by default */
+    transform: translateX(-100%);
+    transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .sp-sidebar.open {
+    transform: translateX(0);
+  }
+
+  .sp-body { display: block; }
+
+  .sp-main { padding: 16px; }
+
+  .sp-grid {
+    grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+    gap: 14px;
+  }
+}
+
+/* ==========================================================
+   RESPONSIVE — Small Mobile (≤ 600px)
+========================================================== */
+@media (max-width: 600px) {
+
+  .sp-hero { padding: 20px 14px 18px; }
+  .sp-hero-title { font-size: 20px; }
+  .sp-hero-count { display: none; }
+
+  .sp-search-form { flex-direction: column; gap: 8px; }
+  .sp-search-wrap { width: 100%; }
+  .sp-submit-btn {
+    width: 100%;
+    justify-content: center;
+    height: 46px;
+  }
+
+  .sp-main { padding: 12px; }
+
+  .sp-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .sp-empty { padding: 40px 16px; }
+  .sp-empty-icon { font-size: 44px; }
+  .sp-empty-title { font-size: 18px; }
+}
+
+/* ==========================================================
+   RESPONSIVE — Extra Small (≤ 380px)
+========================================================== */
+@media (max-width: 380px) {
+  .sp-grid { gap: 8px; }
+  .sp-page-btn { padding: 7px 12px; font-size: 13px; }
+  .sp-hero-title { font-size: 17px; }
+  .sp-submit-btn { font-size: 12px; letter-spacing: 1px; padding: 0 16px; }
+}

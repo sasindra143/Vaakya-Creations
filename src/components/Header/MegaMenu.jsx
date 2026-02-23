@@ -1,56 +1,50 @@
+import { Link } from "react-router-dom";
 import "./MegaMenu.css";
+
+const CATEGORIES = [
+  { label: "Pattu Sarees", slug: "pattu-sarees", emoji: "🥻", desc: "Silk & zari weaves" },
+  { label: "Kurtis", slug: "kurtis", emoji: "👘", desc: "Casual & festive" },
+  { label: "Dresses", slug: "dresses", emoji: "👗", desc: "Ready-to-wear" },
+  { label: "Blouses", slug: "blouses", emoji: "🪡", desc: "Designer crafted" },
+  { label: "Jewellery", slug: "handmade-jewellery", emoji: "💎", desc: "Handmade pieces" },
+];
 
 const MegaMenu = ({ open, onCategoryClick }) => {
   return (
-    <div className={`vc-mega-menu ${open ? "open" : ""}`}>
-
-      {/* ================= SAREES ================= */}
-      <div className="vc-mega-col">
-        <h4>Sarees</h4>
-
-        <p onClick={() => onCategoryClick("pattu-sarees")}>
-          Pattu Sarees
-        </p>
-
-        <p onClick={() => onCategoryClick("fancy-sarees")}>
-          Fancy Sarees
-        </p>
-
-        <p onClick={() => onCategoryClick("sarees")}>
-          All Sarees
-        </p>
+    <div
+      className={`vc-mega-menu${open ? " open" : ""}`}
+      role="dialog"
+      aria-label="Collections menu"
+    >
+      {/* Banner */}
+      <div className="vc-mega-banner">
+        ✦ Explore Our Curated Collections ✦
       </div>
 
-      {/* ================= CLOTHING ================= */}
-      <div className="vc-mega-col">
-        <h4>Clothing</h4>
-
-        <p onClick={() => onCategoryClick("kurtis")}>
-          Kurtis
-        </p>
-
-        <p onClick={() => onCategoryClick("dresses")}>
-          Dresses
-        </p>
-
-        <p onClick={() => onCategoryClick("tops")}>
-          Tops
-        </p>
-
-        <p onClick={() => onCategoryClick("blouses")}>
-          Blouses
-        </p>
+      {/* Grid */}
+      <div className="vc-mega-grid">
+        {CATEGORIES.map((cat) => (
+          <div
+            key={cat.slug}
+            className="vc-mega-card"
+            role="button"
+            tabIndex={open ? 0 : -1}
+            onClick={() => onCategoryClick(cat.slug)}
+            onKeyDown={(e) => e.key === "Enter" && onCategoryClick(cat.slug)}
+          >
+            <div className="vc-mega-icon">{cat.emoji}</div>
+            <span className="vc-mega-label">{cat.label}</span>
+            <span className="vc-mega-desc">{cat.desc}</span>
+          </div>
+        ))}
       </div>
 
-      {/* ================= JEWELLERY ================= */}
-      <div className="vc-mega-col">
-        <h4>Jewellery</h4>
-
-        <p onClick={() => onCategoryClick("handmade-jewellery")}>
-          Handmade Jewellery
-        </p>
+      {/* Footer */}
+      <div className="vc-mega-footer">
+        <Link to="/collections" className="vc-mega-footer-link">
+          View All Collections &rarr;
+        </Link>
       </div>
-
     </div>
   );
 };

@@ -1,3 +1,9 @@
+/**
+ * src/components/ProductCard/ProductCard.jsx
+ * ✅ Image hover swap | ✅ Wishlist toggle | ✅ Size selector (M/L/S etc)
+ * ✅ Quick View modal | ✅ Add to Cart with feedback | ✅ Fully responsive
+ */
+
 import { useState, useContext } from "react";
 import { CartContext } from "../../context/CartContext";
 import { WishlistContext } from "../../context/WishlistContext";
@@ -5,112 +11,129 @@ import QuickViewModal from "../QuickView/QuickViewModal";
 import "./ProductCard.css";
 
 function ProductCard({ product }) {
+  const { addToCart }              = useContext(CartContext);
+  const { addToWishlist, removeFromWishlist, isWishlisted } = useContext(WishlistContext);
 
-  const { addToCart } = useContext(CartContext);
-  const {
-    addToWishlist,
-    removeFromWishlist,
-    isWishlisted
-  } = useContext(WishlistContext);
+  const [selectedSize, setSelectedSize] = useState(product.sizes?.[0] || "");
+  const [showQuickView, setShowQuickView] = useState(false);
+  const [cartState, setCartState] = useState("idle"); // idle | adding | added
 
-  const [selectedSize, setSelectedSize] =
-    useState(product.sizes?.[0] || "");
+  const discount = product.oldPrice
+    ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)
+    : 0;
 
-  const [showQuickView, setShowQuickView] =
-    useState(false);
+  const outOfStock = !product.stock || Number(product.stock) === 0;
+  const wishlisted = isWishlisted(product.id);
 
-  /* ==========================================
-     ADD TO CART
-  ========================================== */
-  const handleAddToCart = () => {
-
-    addToCart({
-      ...product,
-      size: selectedSize
-    });
+  const handleAddToCart = (e) => {
+    e?.stopPropagation();
+    if (outOfStock || cartState !== "idle") return;
+    addToCart({ ...product, size: selectedSize });
+    setCartState("adding");
+    setTimeout(() => setCartState("added"), 300);
+    setTimeout(() => setCartState("idle"), 1800);
   };
 
-  /* ==========================================
-     WISHLIST TOGGLE
-  ========================================== */
-  const handleWishlist = () => {
+  const handleWishlist = (e) => {
+    e.stopPropagation();
+    wishlisted ? removeFromWishlist(product.id) : addToWishlist(product);
+  };
 
-    if (isWishlisted(product.id)) {
-      removeFromWishlist(product.id);
-    } else {
-      addToWishlist(product);
-    }
+  const handleQuickView = (e) => {
+    e.stopPropagation();
+    setShowQuickView(true);
   };
 
   return (
     <>
-      <div className="product-card">
+      <article className={`pc-card${outOfStock ? " pc-out" : ""}`}>
 
-        {/* IMAGE WRAPPER */}
-        <div className="product-image-wrapper">
+        {/* ── IMAGE WRAPPER ── */}
+        <div className="pc-image-wrap">
 
+          {/* Main image */}
           <img
             src={product.image}
             alt={product.name}
-            className="product-image main-img"
+            className="pc-img pc-img-main"
+            onError={e => { e.target.src = "https://placehold.co/400x500/f5ead8/7a4f20?text=No+Image"; }}
+            loading="lazy"
           />
 
-          {/* Hover image swap */}
+          {/* Hover swap image */}
           {product.hoverImage && (
             <img
               src={product.hoverImage}
-              alt="hover"
-              className="product-image hover-img"
+              alt={`${product.name} alternate view`}
+              className="pc-img pc-img-hover"
+              loading="lazy"
             />
           )}
 
+          {/* Out of stock overlay */}
+          {outOfStock && (
+            <div className="pc-out-overlay">Out of Stock</div>
+          )}
+
+          {/* Discount badge */}
+          {discount > 0 && !outOfStock && (
+            <div className="pc-badge-discount">−{discount}%</div>
+          )}
+
           {/* Wishlist */}
-          <div
-            className={`wishlist-heart ${
-              isWishlisted(product.id)
-                ? "active"
-                : ""
-            }`}
+          <button
+            className={`pc-wishlist${wishlisted ? " active" : ""}`}
             onClick={handleWishlist}
+            aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
           >
-            ♥
-          </div>
+            {wishlisted ? "♥" : "♡"}
+          </button>
 
           {/* Quick View */}
-          <button
-            className="quick-view-btn"
-            onClick={() => setShowQuickView(true)}
-          >
-            Quick View
+          <button className="pc-quick-view" onClick={handleQuickView}>
+            👁 Quick View
           </button>
 
         </div>
 
-        {/* INFO */}
-        <div className="product-info">
+        {/* ── INFO ── */}
+        <div className="pc-info">
 
-          <h3 className="product-title">
-            {product.name}
-          </h3>
+          {/* Category */}
+          {product.category && (
+            <span className="pc-category">{product.category.replace(/-/g, " ")}</span>
+          )}
 
-          <div className="product-price">
-            ₹{product.price}
+          {/* Name */}
+          <h3 className="pc-name">{product.name}</h3>
+
+          {/* Rating */}
+          {product.rating && (
+            <div className="pc-rating">
+              {[1,2,3,4,5].map(i => (
+                <span key={i} className={`pc-star${i <= Math.round(product.rating) ? " on" : ""}`}>★</span>
+              ))}
+              <span className="pc-rating-val">({Number(product.rating).toFixed(1)})</span>
+            </div>
+          )}
+
+          {/* Price */}
+          <div className="pc-price-row">
+            <span className="pc-price">₹{Number(product.price).toLocaleString()}</span>
+            {product.oldPrice && (
+              <span className="pc-old-price">₹{Number(product.oldPrice).toLocaleString()}</span>
+            )}
           </div>
 
           {/* Sizes */}
-          {product.sizes && (
-            <div className="size-selector">
+          {product.sizes?.length > 0 && (
+            <div className="pc-sizes">
               {product.sizes.map(size => (
                 <button
                   key={size}
-                  className={
-                    selectedSize === size
-                      ? "size-btn active"
-                      : "size-btn"
-                  }
-                  onClick={() =>
-                    setSelectedSize(size)
-                  }
+                  className={`pc-size-btn${selectedSize === size ? " active" : ""}`}
+                  onClick={e => { e.stopPropagation(); setSelectedSize(size); }}
+                  aria-pressed={selectedSize === size}
                 >
                   {size}
                 </button>
@@ -118,25 +141,29 @@ function ProductCard({ product }) {
             </div>
           )}
 
-          {/* Add Cart */}
+          {/* Add to Cart */}
           <button
-            className="add-to-cart-btn"
+            className={`pc-cart-btn${cartState === "added" ? " added" : ""}${cartState === "adding" ? " adding" : ""}`}
             onClick={handleAddToCart}
+            disabled={outOfStock || cartState !== "idle"}
           >
-            Add To Cart
+            {outOfStock
+              ? "Out of Stock"
+              : cartState === "adding"
+              ? "Adding…"
+              : cartState === "added"
+              ? "✓ Added to Cart!"
+              : "Add to Cart"}
           </button>
 
         </div>
-      </div>
+      </article>
 
       {/* Quick View Modal */}
       {showQuickView && (
         <QuickViewModal
           product={product}
-          onClose={() =>
-            setShowQuickView(false)
-          }
-          onAddToCart={handleAddToCart}
+          onClose={() => setShowQuickView(false)}
         />
       )}
     </>

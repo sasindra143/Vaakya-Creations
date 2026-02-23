@@ -1,110 +1,195 @@
-/* =========================================
-   MEGA MENU CONTAINER
-========================================= */
+/* ==========================================================
+   MEGA MENU
+========================================================== */
 
 .vc-mega-menu {
   position: absolute;
-  top: 55px;
+  top: calc(100% + 1px);
   left: 50%;
-  transform: translateX(-50%) translateY(-20px);
-  background: #ffffff;
-  padding: 40px 50px;
-  display: flex;
-  gap: 70px;
-  border-radius: 18px;
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.12);
+  transform: translateX(-50%) translateY(-8px);
+  width: 600px;
+  max-width: 95vw;
+  background: var(--vc-bg);
+  border: 1px solid var(--vc-border);
+  border-radius: var(--vc-radius);
+  box-shadow: var(--vc-shadow-lg);
+  z-index: 6000;
+  overflow: hidden;
+
+  /* Hidden state */
   opacity: 0;
   pointer-events: none;
-  transition: all 0.3s ease;
-  min-width: 650px;
-  z-index: 3000;
+  visibility: hidden;
+  transition:
+    opacity 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+    visibility 0.28s;
 }
 
-/* OPEN STATE */
 .vc-mega-menu.open {
   opacity: 1;
-  transform: translateX(-50%) translateY(0);
   pointer-events: auto;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
 }
 
-/* =========================================
-   COLUMN STRUCTURE
-========================================= */
+/* ── Top Banner ── */
+.vc-mega-banner {
+  background: var(--vc-primary);
+  color: var(--vc-accent-light);
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 11px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  padding: 10px 24px;
+  text-align: center;
+}
 
-.vc-mega-col {
+/* ── Grid ── */
+.vc-mega-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  padding: 24px;
+}
+
+/* ── Category Card ── */
+.vc-mega-card {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  min-width: 160px;
-}
-
-/* COLUMN TITLE */
-.vc-mega-col h4 {
-  font-size: 15px;
-  font-weight: 600;
-  margin-bottom: 10px;
-  color: #111;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-}
-
-/* CATEGORY ITEM */
-.vc-mega-col p {
-  font-size: 14px;
-  color: #555;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 12px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: all 0.25s ease;
+  text-align: center;
+  text-decoration: none;
+  transition: background var(--vc-transition), transform var(--vc-transition);
   position: relative;
-  padding-left: 0;
+  overflow: hidden;
 }
 
-/* HOVER EFFECT */
-.vc-mega-col p:hover {
-  color: #000;
-  transform: translateX(6px);
-}
-
-/* Subtle underline animation */
-.vc-mega-col p::after {
+.vc-mega-card::before {
   content: "";
   position: absolute;
-  left: 0;
-  bottom: -3px;
-  width: 0%;
-  height: 1.5px;
-  background: #000;
-  transition: width 0.3s ease;
+  inset: 0;
+  background: var(--vc-accent);
+  opacity: 0;
+  border-radius: 6px;
+  transition: opacity 0.2s ease;
 }
 
-.vc-mega-col p:hover::after {
-  width: 50%;
+.vc-mega-card:hover {
+  background: var(--vc-bg-soft);
+  transform: translateY(-2px);
 }
 
-/* =========================================
-   RESPONSIVE DESIGN
-========================================= */
+/* ── Card Icon ── */
+.vc-mega-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--vc-bg-soft);
+  border: 1px solid var(--vc-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  transition: background var(--vc-transition), border-color var(--vc-transition), transform var(--vc-transition);
+  position: relative;
+  z-index: 1;
+}
 
-@media (max-width: 1024px) {
-  .vc-mega-menu {
-    min-width: 550px;
-    gap: 40px;
-    padding: 30px 35px;
+.vc-mega-card:hover .vc-mega-icon {
+  background: var(--vc-accent-light);
+  border-color: var(--vc-accent);
+  transform: scale(1.08);
+}
+
+/* ── Card Label ── */
+.vc-mega-label {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--vc-text);
+  position: relative;
+  z-index: 1;
+  transition: color var(--vc-transition);
+}
+
+.vc-mega-card:hover .vc-mega-label {
+  color: var(--vc-secondary);
+}
+
+/* ── Card Desc ── */
+.vc-mega-desc {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 12px;
+  color: var(--vc-text-muted);
+  font-style: italic;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Footer ── */
+.vc-mega-footer {
+  border-top: 1px solid var(--vc-border);
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vc-mega-footer-link {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--vc-accent);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: gap var(--vc-transition), color var(--vc-transition);
+}
+
+.vc-mega-footer-link:hover {
+  color: var(--vc-secondary);
+  gap: 10px;
+}
+
+/* ── Stagger animation ── */
+.vc-mega-menu.open .vc-mega-card {
+  animation: megaCardIn 0.35s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.vc-mega-menu.open .vc-mega-card:nth-child(1) { animation-delay: 0.04s; }
+.vc-mega-menu.open .vc-mega-card:nth-child(2) { animation-delay: 0.08s; }
+.vc-mega-menu.open .vc-mega-card:nth-child(3) { animation-delay: 0.12s; }
+.vc-mega-menu.open .vc-mega-card:nth-child(4) { animation-delay: 0.16s; }
+.vc-mega-menu.open .vc-mega-card:nth-child(5) { animation-delay: 0.20s; }
+
+@keyframes megaCardIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-@media (max-width: 900px) {
+/* ── Responsive ── */
+@media (max-width: 680px) {
   .vc-mega-menu {
-    position: static;
-    transform: none;
-    flex-direction: column;
-    gap: 25px;
-    min-width: 100%;
-    box-shadow: none;
-    border-radius: 0;
-    padding: 20px;
+    width: 95vw;
   }
 
-  .vc-mega-menu.open {
-    transform: none;
+  .vc-mega-grid {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 16px;
   }
 }

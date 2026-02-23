@@ -1,0 +1,153 @@
+/* src/components/Cart/AddToCartModal.css (or styles/addToCartModal.css) */
+
+.atc-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10,8,6,0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  z-index: 9999;
+  padding: 80px 20px 0;
+  animation: atcFade 0.2s ease;
+}
+@keyframes atcFade { from { opacity: 0; } to { opacity: 1; } }
+
+.atc-modal {
+  width: 100%;
+  max-width: 400px;
+  background: #fff;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+  animation: atcSlide 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  font-family: "DM Sans", system-ui, sans-serif;
+}
+@keyframes atcSlide {
+  from { opacity: 0; transform: translateY(-20px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Header */
+.atc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+  border-bottom: 1px solid #c8e6c9;
+}
+.atc-success-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #1b5e20;
+}
+.atc-check {
+  width: 22px; height: 22px;
+  background: #2e7d32;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 900;
+}
+.atc-close {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  border: 1.5px solid #a5d6a7;
+  background: none;
+  color: #2e7d32;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s;
+}
+.atc-close:hover { background: #2e7d32; color: #fff; }
+
+/* Body */
+.atc-body { padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+
+/* Product preview */
+.atc-product {
+  display: flex;
+  gap: 14px;
+  background: #faf7f3;
+  border-radius: 12px;
+  padding: 12px;
+  border: 1px solid #ede8e0;
+}
+.atc-img-wrap {
+  width: 70px; height: 88px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 1px solid #ede8e0;
+}
+.atc-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.atc-product-info { flex: 1; display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.atc-prod-name {
+  font-size: 14px; font-weight: 700; color: #1a1612; margin: 0;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.atc-size-tag {
+  background: #f0e8d8; color: #7a4f20;
+  font-size: 11.5px; font-weight: 600;
+  padding: 3px 9px; border-radius: 4px; width: fit-content;
+}
+.atc-cat {
+  font-size: 10.5px; font-weight: 700; color: #c9a96e;
+  text-transform: uppercase; letter-spacing: 0.8px;
+}
+.atc-price { font-size: 16px; font-weight: 800; color: #1a1612; }
+
+/* Subtotal */
+.atc-subtotal-bar {
+  display: flex; justify-content: space-between; align-items: center;
+  background: linear-gradient(135deg, #fdf5e4, #f0e8d8);
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 13.5px; color: #5a4535;
+  border: 1px solid #e8dcc8;
+}
+.atc-sub-val { font-size: 17px; font-weight: 900; color: #1a1612; }
+
+/* Actions */
+.atc-actions { display: flex; gap: 10px; }
+.atc-btn-cart, .atc-btn-checkout {
+  flex: 1; padding: 13px; border: none;
+  font-size: 14px; font-weight: 700;
+  font-family: inherit; cursor: pointer;
+  border-radius: 10px; transition: all 0.2s;
+}
+.atc-btn-cart {
+  background: #faf7f3;
+  color: #1a1612;
+  border: 1.5px solid #1a1612;
+}
+.atc-btn-cart:hover { background: #1a1612; color: #c9a96e; }
+.atc-btn-checkout {
+  background: linear-gradient(135deg, #1a1612, #2d2420);
+  color: #c9a96e;
+  box-shadow: 0 4px 14px rgba(26,22,18,0.2);
+}
+.atc-btn-checkout:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(26,22,18,0.28); }
+
+.atc-continue {
+  background: none; border: none;
+  color: #9a8575; font-size: 13px; font-weight: 600;
+  cursor: pointer; font-family: inherit;
+  text-align: center; padding: 2px; transition: color 0.15s;
+}
+.atc-continue:hover { color: #1a1612; }
+
+/* Mobile */
+@media (max-width: 480px) {
+  .atc-overlay { justify-content: center; padding: 70px 12px 0; }
+  .atc-modal { max-width: 100%; }
+}

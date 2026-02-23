@@ -1,81 +1,77 @@
 /* ==========================================================
-   GLOBAL RESET (REMOVE ALL DEFAULT SPACE)
+   GLOBAL RESET
 ========================================================== */
-
-html, body {
+*, *::before, *::after {
   margin: 0;
   padding: 0;
-  height: 100%;
+  box-sizing: border-box;
+}
+
+html, body {
+  overflow-x: hidden;
+  scroll-behavior: smooth;
 }
 
 #root {
-  margin: 0;
-  padding: 0;
   min-height: 100%;
 }
 
 /* ==========================================================
-   HEADER HEIGHT VARIABLE (IMPORTANT FOR HERO FIX)
+   CSS VARIABLES
 ========================================================== */
-
 :root {
-  --vc-header-height: 130px;   /* Adjust if needed */
+  --vc-primary: #1a1a1a;
+  --vc-secondary: #4a3728;
+  --vc-accent: #c9a96e;
+  --vc-accent-light: #e8d5b5;
+  --vc-bg: #ffffff;
+  --vc-bg-soft: #faf9f7;
+  --vc-bg-nav: #f9f7f4;
+  --vc-border: #e8e2d9;
+  --vc-text: #2c2c2c;
+  --vc-text-muted: #6b6560;
+  --vc-shadow-sm: 0 2px 12px rgba(0,0,0,0.06);
+  --vc-shadow-md: 0 8px 32px rgba(0,0,0,0.10);
+  --vc-shadow-lg: 0 20px 60px rgba(0,0,0,0.15);
+  --vc-header-height: auto;
+  --vc-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --vc-radius: 8px;
 }
 
 /* ==========================================================
-   HEADER ROOT WRAPPER
+   HEADER WRAPPER
 ========================================================== */
-
 .vc-header {
   width: 100%;
-  height: var(--vc-header-height);
-
   position: sticky;
   top: 0;
-  z-index: 2000;
-
-  background: #ffffff;
-
+  z-index: 5000;
+  background: var(--vc-bg);
   display: flex;
   flex-direction: column;
-  justify-content: center;
-
-  margin: 0;
-  padding: 0;
-
-  line-height: normal;
-
   isolation: isolate;
+  transition: box-shadow var(--vc-transition), background var(--vc-transition);
+  animation: vcHeaderFade 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
 }
-
-/* Remove spacing from children */
 
 .vc-header > * {
   width: 100%;
-  margin: 0;
-  padding: 0;
 }
 
 /* ==========================================================
-   OPTIONAL SHADOW ON SCROLL
+   SCROLL SHADOW
 ========================================================== */
-
 .vc-header-scrolled {
-  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08), 0 1px 0 var(--vc-border);
 }
 
 /* ==========================================================
-   FADE IN ANIMATION
+   ANIMATIONS
 ========================================================== */
-
-.vc-header {
-  animation: vcHeaderFade 0.35s ease forwards;
-}
-
 @keyframes vcHeaderFade {
   from {
     opacity: 0;
-    transform: translateY(-6px);
+    transform: translateY(-8px);
   }
   to {
     opacity: 1;
@@ -84,43 +80,21 @@ html, body {
 }
 
 /* ==========================================================
-   FORCE REMOVE GAP BELOW HEADER
+   NO GAP BELOW HEADER
 ========================================================== */
-
 .vc-header + * {
   margin-top: 0 !important;
 }
 
 /* ==========================================================
-   RESPONSIVE HEADER HEIGHT
+   RESPONSIVE
 ========================================================== */
-
 @media (max-width: 1024px) {
-  :root {
-    --vc-header-height: 120px;
-  }
-
-  .vc-header {
-    font-size: 15px;
-  }
+  .vc-header { font-size: 15px; }
 }
-
 @media (max-width: 768px) {
-  :root {
-    --vc-header-height: 110px;
-  }
-
-  .vc-header {
-    font-size: 14px;
-  }
+  .vc-header { font-size: 14px; }
 }
-
 @media (max-width: 480px) {
-  :root {
-    --vc-header-height: 95px;
-  }
-
-  .vc-header {
-    font-size: 13px;
-  }
+  .vc-header { font-size: 13px; }
 }
