@@ -9,7 +9,7 @@ import { useParams, useNavigate }                   from "react-router-dom";
 import { CartContext }                               from "../context/CartContext";
 import { WishlistContext }                           from "../context/WishlistContext";
 import { useProducts }                              from "../context/ProductContext";
-import "./ProductDetails.css";
+import "./Productdetails.css";
 
 /* ── Icons ── */
 const HeartIcon = ({ filled }) => (
