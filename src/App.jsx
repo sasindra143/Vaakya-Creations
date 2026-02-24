@@ -26,7 +26,7 @@ import { useAuth }          from "./context/AuthContext.jsx";
 
 /* ── Public Pages ── */
 import Home               from "./pages/Home.jsx";
-import CategoryPage       from "./pages/CategoryPage.jsx";
+import Categorypage       from "./pages/Categorypage.jsx";
 import ProductDetails     from "./pages/ProductDetails.jsx";
 import CartPage           from "./pages/CartPage.jsx";
 import WishlistPage       from "./components/Wishlist/WishlistPage.jsx";
@@ -537,7 +537,7 @@ function AppContent() {
 
           {/* ── Public Routes ── */}
           <Route path="/"                       element={<Home />} />
-          <Route path="/category/:categoryName" element={<CategoryPage />} />
+          <Route path="/category/:categoryName" element={<Categorypage />} />
           <Route path="/product/:id"            element={<ProductDetails />} />
           <Route path="/search"                 element={<SearchPage />} />
           <Route path="/cart"                   element={<CartPage />} />
