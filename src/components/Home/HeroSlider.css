@@ -1,7 +1,6 @@
 /* ================================================================
-   HeroSlider.css
-   Luxury Indian Fashion — Hero Carousel Styles
-   Aesthetic: Editorial · Refined · Warm Gold & Deep Maroon
+   HeroSlider.css  —  Vaakya Creations v4.0
+   10-slide luxury carousel · Editorial · Warm Gold & Deep Maroon
    Fonts: Cinzel (display) + Cormorant Garamond (body) + Raleway (UI)
    ================================================================ */
 
@@ -10,42 +9,45 @@
 /* ── CSS Custom Properties ──────────────────────────────────── */
 :root {
   /* Brand palette */
-  --hs-gold: #c9a84c;
-  --hs-gold-light: #e8c97a;
-  --hs-gold-pale: #f5e9c4;
-  --hs-gold-dark: #9a7a2e;
-  --hs-cream: #fdf6ec;
-  --hs-maroon: #7b1b30;
-  --hs-maroon-deep: #4a0e1a;
-  --hs-charcoal: #191210;
-  --hs-white: #ffffff;
+  --hs-gold:          #c9a84c;
+  --hs-gold-light:    #e8c97a;
+  --hs-gold-pale:     #f5e9c4;
+  --hs-gold-dark:     #9a7a2e;
+  --hs-cream:         #fdf6ec;
+  --hs-maroon:        #7b1b30;
+  --hs-maroon-deep:   #4a0e1a;
+  --hs-charcoal:      #0f0603;
+  --hs-white:         #ffffff;
+
+  /* Per-slide dynamic accent (set via inline style on .hero-slider) */
+  --hs-slide-accent:  #c9a84c;
 
   /* Overlays */
-  --hs-overlay-left: linear-gradient(
-    110deg,
-    rgba(15, 6, 3, 0.82) 0%,
-    rgba(15, 6, 3, 0.55) 48%,
-    rgba(15, 6, 3, 0.10) 100%
+  --hs-overlay-desktop: linear-gradient(
+    115deg,
+    rgba(10, 4, 2, 0.88) 0%,
+    rgba(10, 4, 2, 0.60) 45%,
+    rgba(10, 4, 2, 0.08) 100%
   );
   --hs-overlay-mobile: linear-gradient(
     180deg,
-    rgba(15, 6, 3, 0.08) 0%,
-    rgba(15, 6, 3, 0.55) 48%,
-    rgba(15, 6, 3, 0.92) 100%
+    rgba(10, 4, 2, 0.12) 0%,
+    rgba(10, 4, 2, 0.50) 42%,
+    rgba(10, 4, 2, 0.95) 100%
   );
 
   /* Typography */
-  --hs-font-display: "Cinzel", serif;
-  --hs-font-body: "Cormorant Garamond", serif;
-  --hs-font-ui: "Raleway", sans-serif;
+  --hs-font-display: "Cinzel", "Palatino Linotype", serif;
+  --hs-font-body:    "Cormorant Garamond", Georgia, serif;
+  --hs-font-ui:      "Raleway", "Trebuchet MS", sans-serif;
 
   /* Motion */
-  --hs-slide-duration: 0.95s;
-  --hs-slide-ease: cubic-bezier(0.77, 0, 0.18, 1);
-  --hs-btn-ease: cubic-bezier(0.76, 0, 0.24, 1);
+  --hs-ease-slide:   cubic-bezier(0.77, 0, 0.18, 1);
+  --hs-ease-content: cubic-bezier(0.22, 1, 0.36, 1);
+  --hs-ease-btn:     cubic-bezier(0.76, 0, 0.24, 1);
 }
 
-/* ── Global reset for slider scope ─────────────────────────── */
+/* ── Scoped reset ───────────────────────────────────────────── */
 .hero-slider *,
 .hero-slider *::before,
 .hero-slider *::after {
@@ -54,22 +56,29 @@
   padding: 0;
 }
 
-/* ── Section Wrapper ────────────────────────────────────────── */
+/* ================================================================
+   SECTION WRAPPER
+   ================================================================ */
 .hero-slider {
   position: relative;
   width: 100%;
+  /* Full viewport height on every device */
   height: 100svh;
-  min-height: 560px;
-  max-height: 960px;
+  min-height: 580px;
+  max-height: 980px;
   overflow: hidden;
   background-color: var(--hs-charcoal);
   cursor: default;
   outline: none;
   user-select: none;
   -webkit-user-select: none;
+  /* Isolate stacking context */
+  isolation: isolate;
 }
 
-/* ── Individual Slide ───────────────────────────────────────── */
+/* ================================================================
+   INDIVIDUAL SLIDE
+   ================================================================ */
 .hero-slide {
   position: absolute;
   inset: 0;
@@ -77,11 +86,12 @@
   height: 100%;
   opacity: 0;
   visibility: hidden;
-  transform: scale(1.045);
+  /* Ken-Burns: zoom out from 108% → 100% */
+  transform: scale(1.08);
   transition:
-    opacity var(--hs-slide-duration) var(--hs-slide-ease),
-    visibility var(--hs-slide-duration) var(--hs-slide-ease),
-    transform var(--hs-slide-duration) var(--hs-slide-ease);
+    opacity   0.95s var(--hs-ease-slide),
+    visibility 0.95s var(--hs-ease-slide),
+    transform  0.95s var(--hs-ease-slide);
   will-change: opacity, transform;
   z-index: 0;
 }
@@ -93,37 +103,61 @@
   z-index: 1;
 }
 
-/* ── Slide Image ────────────────────────────────────────────── */
+/* ================================================================
+   SLIDE IMAGES — DESKTOP vs MOBILE
+   ================================================================ */
+
+/* Both images fill the slide */
 .hero-slide__img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center top;
   display: block;
   pointer-events: none;
   user-select: none;
   -webkit-user-select: none;
 }
 
-/* ── Gradient Overlay ───────────────────────────────────────── */
+/* Desktop image: landscape crop, focal point top-centre */
+.hero-slide__img--desktop {
+  object-position: center top;
+  z-index: 0;
+}
+
+/* Mobile image: portrait crop, focal point top-centre */
+.hero-slide__img--mobile {
+  object-position: center top;
+  z-index: 0;
+  /* Hidden on desktop — shown on mobile via media query */
+  display: none;
+}
+
+/* ================================================================
+   GRADIENT OVERLAY
+   ================================================================ */
 .hero-slide__overlay {
   position: absolute;
   inset: 0;
-  background: var(--hs-overlay-left);
   z-index: 2;
+  /* Desktop: left-heavy gradient — text on left, image visible right */
+  background: var(--hs-overlay-desktop);
   display: flex;
   align-items: flex-end;
   padding: 0 7% 7% 7%;
 }
 
-/* ── Content Block ──────────────────────────────────────────── */
+/* ================================================================
+   CONTENT BLOCK
+   ================================================================ */
 .hero-content {
-  max-width: 640px;
+  max-width: 660px;
   opacity: 0;
-  transform: translateY(40px);
+  transform: translateY(44px);
   transition:
-    opacity 0.75s ease 0.2s,
-    transform 0.75s cubic-bezier(0.22, 1, 0.36, 1) 0.2s;
+    opacity   0.75s ease 0.25s,
+    transform 0.75s var(--hs-ease-content) 0.25s;
 }
 
 .hero-slide.active .hero-content {
@@ -131,100 +165,150 @@
   transform: translateY(0);
 }
 
-/* ── Eyebrow Badge ──────────────────────────────────────────── */
+/* ================================================================
+   EYEBROW BADGE
+   ================================================================ */
 .hero-badge {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   font-family: var(--hs-font-ui);
-  font-size: 0.67rem;
-  font-weight: 600;
-  letter-spacing: 0.24em;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: var(--hs-gold-light);
-  margin-bottom: 18px;
+  color: var(--hs-slide-accent, var(--hs-gold-light));
+  margin-bottom: 16px;
+  opacity: 0;
+  transform: translateX(-14px);
+  transition:
+    opacity   0.55s ease 0.45s,
+    transform 0.55s var(--hs-ease-content) 0.45s;
+}
+
+.hero-slide.active .hero-badge {
+  opacity: 1;
+  transform: translateX(0);
 }
 
 .hero-badge::before {
   content: "";
   display: inline-block;
-  width: 30px;
+  width: 32px;
   height: 1px;
-  background: var(--hs-gold);
+  background: var(--hs-slide-accent, var(--hs-gold));
   flex-shrink: 0;
 }
 
-/* ── Heading ────────────────────────────────────────────────── */
+/* ================================================================
+   HEADING
+   ================================================================ */
 .hero-title {
   font-family: var(--hs-font-display);
-  font-size: clamp(2.2rem, 5.8vw, 4.8rem);
+  font-size: clamp(2.4rem, 6vw, 5rem);
   font-weight: 500;
   color: var(--hs-cream);
-  line-height: 1.08;
+  line-height: 1.06;
   letter-spacing: 0.03em;
-  margin-bottom: 18px;
-  text-shadow: 0 3px 40px rgba(0, 0, 0, 0.45);
+  margin-bottom: 16px;
+  text-shadow: 0 4px 48px rgba(0, 0, 0, 0.55);
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity   0.65s ease 0.35s,
+    transform 0.65s var(--hs-ease-content) 0.35s;
 }
 
-.hero-title em {
+.hero-slide.active .hero-title {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hero-title__accent {
   font-style: italic;
-  color: var(--hs-gold-light);
+  color: var(--hs-slide-accent, var(--hs-gold-light));
 }
 
-/* ── Subtitle ───────────────────────────────────────────────── */
+/* ================================================================
+   SUBTITLE
+   ================================================================ */
 .hero-subtitle {
   font-family: var(--hs-font-body);
-  font-size: clamp(1rem, 1.9vw, 1.22rem);
+  font-size: clamp(1rem, 1.85vw, 1.2rem);
   font-weight: 300;
   font-style: italic;
-  color: rgba(253, 246, 236, 0.80);
-  line-height: 1.70;
-  max-width: 520px;
-  margin-bottom: 36px;
-  letter-spacing: 0.01em;
+  color: rgba(253, 246, 236, 0.82);
+  line-height: 1.72;
+  max-width: 540px;
+  margin-bottom: 38px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity   0.65s ease 0.50s,
+    transform 0.65s var(--hs-ease-content) 0.50s;
 }
 
-/* ── CTA Group ──────────────────────────────────────────────── */
+.hero-slide.active .hero-subtitle {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ================================================================
+   CTA GROUP
+   ================================================================ */
 .hero-cta-group {
   display: flex;
   align-items: center;
-  gap: 22px;
+  gap: 24px;
   flex-wrap: wrap;
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity   0.60s ease 0.62s,
+    transform 0.60s var(--hs-ease-content) 0.62s;
 }
 
-/* ── Primary Button ─────────────────────────────────────────── */
+.hero-slide.active .hero-cta-group {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Primary CTA button ── */
 .hero-btn {
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  padding: 15px 40px;
+  padding: 14px 38px;
   background: transparent;
-  border: 1.5px solid var(--hs-gold);
+  border: 1.5px solid var(--hs-slide-accent, var(--hs-gold));
   color: var(--hs-cream);
   font-family: var(--hs-font-ui);
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.22em;
+  font-size: 0.70rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
   cursor: pointer;
   overflow: hidden;
   transition:
-    color 0.40s var(--hs-btn-ease),
+    color        0.40s var(--hs-ease-btn),
     border-color 0.40s ease;
   text-decoration: none;
   white-space: nowrap;
+  /* Hardware-accelerated */
+  will-change: color;
 }
 
 .hero-btn::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: var(--hs-gold);
+  background: var(--hs-slide-accent, var(--hs-gold));
   transform: scaleX(0);
   transform-origin: left center;
-  transition: transform 0.40s var(--hs-btn-ease);
+  transition: transform 0.40s var(--hs-ease-btn);
+  will-change: transform;
 }
 
 .hero-btn:hover::before,
@@ -247,21 +331,21 @@
 .hero-btn__icon {
   display: inline-flex;
   align-items: center;
-  transition: transform 0.30s ease;
+  transition: transform 0.28s ease;
 }
 
 .hero-btn:hover .hero-btn__icon {
   transform: translateX(5px);
 }
 
-/* ── Secondary Ghost Link ───────────────────────────────────── */
+/* ── Secondary ghost link ── */
 .hero-link {
   font-family: var(--hs-font-ui);
-  font-size: 0.70rem;
-  font-weight: 500;
-  letter-spacing: 0.18em;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.20em;
   text-transform: uppercase;
-  color: rgba(253, 246, 236, 0.60);
+  color: rgba(253, 246, 236, 0.58);
   background: none;
   border: none;
   cursor: pointer;
@@ -278,13 +362,13 @@
   left: 0;
   width: 0;
   height: 1px;
-  background: var(--hs-gold-light);
+  background: var(--hs-slide-accent, var(--hs-gold-light));
   transition: width 0.35s ease;
 }
 
 .hero-link:hover,
 .hero-link:focus-visible {
-  color: var(--hs-gold-light);
+  color: var(--hs-slide-accent, var(--hs-gold-light));
   outline: none;
 }
 
@@ -293,51 +377,85 @@
   width: 100%;
 }
 
-/* ── Arrow Navigation Buttons ───────────────────────────────── */
+/* ================================================================
+   CATEGORY TAG (desktop bottom-right)
+   ================================================================ */
+.hero-slide__tag {
+  position: absolute;
+  bottom: 72px;
+  right: 40px;
+  z-index: 4;
+  font-family: var(--hs-font-ui);
+  font-size: 0.60rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--hs-slide-accent, var(--hs-gold));
+  border: 1px solid rgba(201, 168, 76, 0.28);
+  padding: 6px 14px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  background: rgba(15, 6, 3, 0.35);
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity   0.50s ease 0.70s,
+    transform 0.50s ease 0.70s;
+}
+
+.hero-slide.active .hero-slide__tag {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ================================================================
+   ARROW NAVIGATION
+   ================================================================ */
 .hero-arrow {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
   z-index: 10;
-  width: 52px;
-  height: 52px;
+  width: 54px;
+  height: 54px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(253, 246, 236, 0.07);
-  border: 1px solid rgba(201, 168, 76, 0.32);
+  background: rgba(253, 246, 236, 0.06);
+  border: 1px solid rgba(201, 168, 76, 0.30);
   color: var(--hs-cream);
-  font-size: 0.95rem;
   cursor: pointer;
   transition:
-    background 0.32s ease,
-    border-color 0.32s ease,
-    transform 0.32s ease;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+    background    0.30s ease,
+    border-color  0.30s ease,
+    transform     0.30s ease;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
-.hero-arrow.left {
-  left: 28px;
-}
-
-.hero-arrow.right {
-  right: 28px;
-}
+.hero-arrow--left  { left: 28px;  }
+.hero-arrow--right { right: 28px; }
 
 .hero-arrow:hover,
 .hero-arrow:focus-visible {
-  background: rgba(201, 168, 76, 0.20);
-  border-color: var(--hs-gold);
+  background: rgba(201, 168, 76, 0.22);
+  border-color: var(--hs-slide-accent, var(--hs-gold));
   transform: translateY(-50%) scale(1.10);
   outline: none;
 }
 
 .hero-arrow:focus-visible {
-  box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.45);
+  box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.48);
 }
 
-/* ── Dot Navigation ─────────────────────────────────────────── */
+.hero-arrow:disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* ================================================================
+   DOT NAVIGATION
+   ================================================================ */
 .hero-dots {
   position: absolute;
   bottom: 30px;
@@ -353,28 +471,28 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: rgba(253, 246, 236, 0.32);
-  border: 1px solid rgba(201, 168, 76, 0.38);
+  background: rgba(253, 246, 236, 0.28);
+  border: 1px solid rgba(201, 168, 76, 0.35);
   cursor: pointer;
   padding: 0;
   transition:
-    background 0.32s ease,
-    border-color 0.32s ease,
-    width 0.42s var(--hs-btn-ease),
-    border-radius 0.42s ease;
+    background    0.30s ease,
+    border-color  0.30s ease,
+    width         0.40s var(--hs-ease-btn),
+    border-radius 0.40s ease;
 }
 
 .hero-dot.active {
-  background: var(--hs-gold);
-  border-color: var(--hs-gold);
+  background: var(--hs-slide-accent, var(--hs-gold));
+  border-color: var(--hs-slide-accent, var(--hs-gold));
   width: 28px;
   border-radius: 4px;
 }
 
 .hero-dot:hover:not(.active) {
-  background: rgba(201, 168, 76, 0.48);
+  background: rgba(201, 168, 76, 0.50);
   border-color: var(--hs-gold);
-  transform: scale(1.3);
+  transform: scale(1.25);
 }
 
 .hero-dot:focus-visible {
@@ -382,55 +500,58 @@
   outline-offset: 3px;
 }
 
-/* ── Slide Counter ──────────────────────────────────────────── */
+/* ================================================================
+   SLIDE COUNTER
+   ================================================================ */
 .hero-counter {
   position: absolute;
   bottom: 24px;
-  right: 32px;
+  right: 36px;
   z-index: 10;
+  font-family: var(--hs-font-ui);
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  color: rgba(253, 246, 236, 0.42);
+  pointer-events: none;
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-family: var(--hs-font-ui);
-  font-size: 0.68rem;
-  letter-spacing: 0.14em;
-  color: rgba(253, 246, 236, 0.46);
-  pointer-events: none;
+  gap: 4px;
 }
 
 .hero-counter__current {
-  color: var(--hs-gold-light);
-  font-weight: 600;
-  font-size: 0.80rem;
+  color: var(--hs-slide-accent, var(--hs-gold-light));
+  font-weight: 700;
+  font-size: 0.82rem;
 }
 
-.hero-counter__sep {
-  opacity: 0.5;
-}
-
-/* ── Auto-play Progress Bar ─────────────────────────────────── */
+/* ================================================================
+   AUTO-PLAY PROGRESS BAR
+   ================================================================ */
 .hero-progress {
   position: absolute;
   bottom: 0;
   left: 0;
   height: 2px;
   width: 0;
-  background: var(--hs-gold);
+  background: var(--hs-slide-accent, var(--hs-gold));
   z-index: 15;
-  animation: heroProgressRun 5s linear forwards;
+  animation: heroProgress 5s linear forwards;
   transform-origin: left;
+  box-shadow: 0 0 6px var(--hs-slide-accent, var(--hs-gold));
 }
 
 .hero-progress.paused {
   animation-play-state: paused;
 }
 
-@keyframes heroProgressRun {
+@keyframes heroProgress {
   from { width: 0; }
   to   { width: 100%; }
 }
 
-/* ── Pause Hint ─────────────────────────────────────────────── */
+/* ================================================================
+   PAUSE HINT
+   ================================================================ */
 .hero-pause-hint {
   position: absolute;
   top: 20px;
@@ -438,10 +559,10 @@
   transform: translateX(-50%);
   z-index: 10;
   font-family: var(--hs-font-ui);
-  font-size: 0.60rem;
-  letter-spacing: 0.18em;
+  font-size: 0.58rem;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(253, 246, 236, 0.38);
+  color: rgba(253, 246, 236, 0.36);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.30s ease;
@@ -453,17 +574,20 @@
   opacity: 1;
 }
 
-/* ── Decorative Corner Motif ────────────────────────────────── */
+/* ================================================================
+   DECORATIVE MOTIF
+   ================================================================ */
 .hero-motif {
   position: absolute;
-  top: 24px;
-  right: 32px;
+  top: 26px;
+  right: 36px;
   z-index: 5;
-  width: 64px;
-  height: 64px;
+  width: 68px;
+  height: 68px;
   opacity: 0.18;
   pointer-events: none;
-  animation: motifSpin 40s linear infinite;
+  animation: motifSpin 42s linear infinite;
+  will-change: transform;
 }
 
 @keyframes motifSpin {
@@ -472,66 +596,52 @@
 }
 
 /* ================================================================
-   RESPONSIVE BREAKPOINTS
+   ▸ RESPONSIVE — TABLET LANDSCAPE ≤ 1024px
    ================================================================ */
-
-/* ── Wide Desktop (≤ 1440px) ────────────────────────────────── */
-@media (max-width: 1440px) {
-  .hero-slide__overlay {
-    padding: 0 6% 7% 6%;
-  }
-}
-
-/* ── Tablet Landscape (≤ 1024px) ────────────────────────────── */
 @media (max-width: 1024px) {
   .hero-slider {
-    max-height: 800px;
+    max-height: 820px;
   }
 
   .hero-slide__overlay {
     padding: 0 5% 9% 5%;
-    background: var(--hs-overlay-left);
   }
 
   .hero-content {
-    max-width: 520px;
+    max-width: 540px;
   }
 
   .hero-arrow {
-    width: 46px;
-    height: 46px;
+    width: 48px;
+    height: 48px;
   }
 
-  .hero-arrow.left {
-    left: 18px;
-  }
-
-  .hero-arrow.right {
-    right: 18px;
-  }
+  .hero-arrow--left  { left: 18px; }
+  .hero-arrow--right { right: 18px; }
 }
 
-/* ── Tablet Portrait (≤ 768px) ──────────────────────────────── */
+/* ================================================================
+   ▸ RESPONSIVE — TABLET PORTRAIT ≤ 768px
+   ================================================================ */
 @media (max-width: 768px) {
   .hero-slider {
-    height: 92svh;
-    min-height: 490px;
-    max-height: 780px;
+    height: 100svh;
+    min-height: 520px;
+    max-height: 850px;
   }
 
-  /* Shift focal point for portrait images */
-  .hero-slide__img {
-    object-position: 68% top;
-  }
+  /* ── Switch to mobile portrait image ── */
+  .hero-slide__img--desktop { display: none; }
+  .hero-slide__img--mobile  { display: block; }
 
-  /* Bottom-up overlay for mobile readability */
+  /* ── Mobile overlay: bottom-heavy so text is always readable ── */
   .hero-slide__overlay {
     background: var(--hs-overlay-mobile);
     align-items: flex-end;
-    padding: 0 5% 13% 5%;
+    padding: 0 6% 14% 6%;
   }
 
-  /* Center-align all content on mobile */
+  /* ── Center all content on mobile ── */
   .hero-content {
     max-width: 100%;
     text-align: center;
@@ -550,49 +660,69 @@
     justify-content: center;
   }
 
-  /* Smaller arrows */
+  /* ── Smaller arrows ── */
   .hero-arrow {
-    width: 40px;
-    height: 40px;
-    font-size: 0.80rem;
+    width: 42px;
+    height: 42px;
   }
 
-  .hero-arrow.left  { left: 10px; }
-  .hero-arrow.right { right: 10px; }
+  .hero-arrow--left  { left: 10px; }
+  .hero-arrow--right { right: 10px; }
 
-  /* Hide counter on small screens */
+  /* ── Hide desktop tag ── */
+  .hero-slide__tag {
+    display: none;
+  }
+
+  /* ── Hide counter (tight space) ── */
   .hero-counter {
     display: none;
   }
 
   .hero-motif {
-    width: 48px;
-    height: 48px;
+    width: 50px;
+    height: 50px;
     right: 16px;
     top: 16px;
-    opacity: 0.12;
+    opacity: 0.13;
   }
 }
 
-/* ── Mobile Portrait (≤ 520px) ──────────────────────────────── */
+/* ================================================================
+   ▸ RESPONSIVE — MOBILE PORTRAIT ≤ 520px
+   ================================================================ */
 @media (max-width: 520px) {
   .hero-slider {
-    height: 88svh;
-    min-height: 460px;
-    max-height: 700px;
+    height: 100svh;
+    min-height: 480px;
+    max-height: 760px;
   }
 
   .hero-slide__overlay {
-    padding: 0 4% 16% 4%;
+    padding: 0 5% 18% 5%;
+  }
+
+  .hero-title {
+    font-size: clamp(2rem, 9vw, 2.8rem);
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+    margin-bottom: 28px;
+    line-height: 1.60;
   }
 
   .hero-btn {
-    padding: 13px 30px;
-    font-size: 0.68rem;
+    padding: 13px 28px;
+    font-size: 0.66rem;
+  }
+
+  .hero-cta-group {
+    gap: 16px;
   }
 
   .hero-dots {
-    bottom: 22px;
+    bottom: 20px;
     gap: 8px;
   }
 
@@ -605,7 +735,7 @@
     width: 22px;
   }
 
-  /* Hide arrows — swipe only on small mobile */
+  /* Hide arrows on small mobile — swipe only */
   .hero-arrow {
     display: none;
   }
@@ -619,32 +749,44 @@
   }
 }
 
-/* ── Very Small (≤ 380px) ───────────────────────────────────── */
+/* ================================================================
+   ▸ RESPONSIVE — VERY SMALL ≤ 380px
+   ================================================================ */
 @media (max-width: 380px) {
   .hero-slider {
-    min-height: 420px;
+    min-height: 440px;
   }
 
   .hero-title {
-    font-size: 1.85rem;
+    font-size: 1.8rem;
   }
 
   .hero-subtitle {
-    font-size: 0.95rem;
-    margin-bottom: 26px;
+    font-size: 0.92rem;
+    margin-bottom: 22px;
   }
 
   .hero-btn {
-    padding: 12px 24px;
-    font-size: 0.65rem;
+    padding: 12px 22px;
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
   }
 
   .hero-cta-group {
-    gap: 14px;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .hero-badge {
+    font-size: 0.58rem;
+    letter-spacing: 0.22em;
   }
 }
 
-/* ── Reduced Motion ─────────────────────────────────────────── */
+/* ================================================================
+   ▸ PREFERS REDUCED MOTION
+   ================================================================ */
 @media (prefers-reduced-motion: reduce) {
   .hero-slide {
     transition: opacity 0.25s ease;
@@ -655,12 +797,23 @@
     transform: none !important;
   }
 
-  .hero-content {
-    transition: opacity 0.25s ease;
+  .hero-content,
+  .hero-badge,
+  .hero-title,
+  .hero-subtitle,
+  .hero-cta-group,
+  .hero-slide__tag {
+    transition: opacity 0.25s ease !important;
     transform: none !important;
   }
 
-  .hero-slide.active .hero-content {
+  .hero-slide.active .hero-content,
+  .hero-slide.active .hero-badge,
+  .hero-slide.active .hero-title,
+  .hero-slide.active .hero-subtitle,
+  .hero-slide.active .hero-cta-group,
+  .hero-slide.active .hero-slide__tag {
+    opacity: 1 !important;
     transform: none !important;
   }
 
@@ -678,6 +831,6 @@
   }
 
   .hero-dot {
-    transition: none;
+    transition: background 0.15s ease, width 0.15s ease;
   }
 }
