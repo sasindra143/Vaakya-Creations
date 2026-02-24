@@ -45,8 +45,8 @@ import SearchPage         from "./pages/SearchPage";
 
 /* ── Auth Pages ── */
 /* FIXED: single import per page, name matches the file's default export exactly */
-import SignInPage from "./pages/SignInPage";
-import SignUpPage from "./pages/SignUpPage";
+import SignInPage from "./pages/Signinpage";
+import SignUpPage from "./pages/Signuppage";
 
 /* ── Admin Pages ── */
 import AdminLayout    from "./components/Admin/AdminLayout";
@@ -126,8 +126,8 @@ function AppContent() {
               Login  → email + password
               Signup → name, email, whatsapp, password
           ════════════════════════════════ */}
-          <Route path="/signin" element={<SignInPage />} />
-          <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/signin" element={<Signinpage />} />
+          <Route path="/signup" element={<Signuppage />} />
 
           {/* ════════════════════════════════
               ADMIN ROUTES
