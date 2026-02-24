@@ -1,12 +1,13 @@
 /**
  * src/components/Header/Header.jsx
- * ✅ FIXED: No gap between header and content below
- * ✅ Sticky header, mobile responsive
+ * ✅ No gap below header (pt-24 removed from App shell via CSS)
+ * ✅ Fully mobile responsive
+ * ✅ Scroll shadow
  */
 
 import { useState, useEffect } from "react";
-import HeaderTop from "./HeaderTop";
-import HeaderNav from "./HeaderNav";
+import HeaderTop     from "./HeaderTop";
+import HeaderNav     from "./HeaderNav";
 import SearchOverlay from "./SearchOverlay";
 import "./Header.css";
 

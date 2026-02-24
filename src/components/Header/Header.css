@@ -1,67 +1,103 @@
-/* src/components/Header/Header.css
-   ✅ FIXED: No margin/gap below header
-   ✅ Sticky, z-index correct
-   ✅ Mobile responsive
-*/
+/* src/components/Header/Header.css */
 
-/* ── RESET ── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { overflow-x: hidden; scroll-behavior: smooth; }
-
-/* ── CSS VARIABLES ── */
-:root {
-  --vc-primary:        #1a1a1a;
-  --vc-secondary:      #4a3728;
-  --vc-accent:         #c9a96e;
-  --vc-accent-light:   #e8d5b5;
-  --vc-bg:             #ffffff;
-  --vc-bg-soft:        #faf9f7;
-  --vc-border:         #e8e2d9;
-  --vc-text:           #2c2c2c;
-  --vc-text-muted:     #6b6560;
-  --vc-shadow-sm:      0 2px 12px rgba(0,0,0,0.06);
-  --vc-shadow-md:      0 8px 32px rgba(0,0,0,0.10);
-  --vc-transition:     0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --vc-radius:         8px;
+/* ==========================================================
+   GLOBAL RESET
+========================================================== */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-/* ── HEADER WRAPPER ── */
+html, body {
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+#root {
+  min-height: 100%;
+}
+
+/* ==========================================================
+   CSS VARIABLES
+========================================================== */
+:root {
+  --vc-primary: #1a1a1a;
+  --vc-secondary: #4a3728;
+  --vc-accent: #c9a96e;
+  --vc-accent-light: #e8d5b5;
+  --vc-bg: #ffffff;
+  --vc-bg-soft: #faf9f7;
+  --vc-bg-nav: #f9f7f4;
+  --vc-border: #e8e2d9;
+  --vc-text: #2c2c2c;
+  --vc-text-muted: #6b6560;
+  --vc-shadow-sm: 0 2px 12px rgba(0,0,0,0.06);
+  --vc-shadow-md: 0 8px 32px rgba(0,0,0,0.10);
+  --vc-shadow-lg: 0 20px 60px rgba(0,0,0,0.15);
+  --vc-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --vc-radius: 8px;
+}
+
+/* ==========================================================
+   HEADER WRAPPER
+========================================================== */
 .vc-header {
   width: 100%;
   position: sticky;
   top: 0;
-  left: 0;
-  right: 0;
   z-index: 5000;
   background: var(--vc-bg);
   display: flex;
   flex-direction: column;
   isolation: isolate;
-  transition: box-shadow var(--vc-transition);
+  transition: box-shadow var(--vc-transition), background var(--vc-transition);
   animation: vcHeaderFade 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
-  /* ✅ CRITICAL: No bottom margin or padding that creates gap */
+
+  /* ✅ CRITICAL: remove any gap below header */
   margin-bottom: 0 !important;
   padding-bottom: 0 !important;
 }
 
-/* ── SCROLL SHADOW ── */
+.vc-header > * {
+  width: 100%;
+}
+
+/* ==========================================================
+   SCROLL SHADOW
+========================================================== */
 .vc-header-scrolled {
   box-shadow: 0 4px 24px rgba(0,0,0,0.08), 0 1px 0 var(--vc-border);
 }
 
-/* ✅ CRITICAL: Remove any gap between header and the next sibling */
-.vc-header + * {
-  margin-top: 0 !important;
-  padding-top: 0 !important;
-}
-
-/* ── ANIMATION ── */
+/* ==========================================================
+   ANIMATIONS
+========================================================== */
 @keyframes vcHeaderFade {
   from { opacity: 0; transform: translateY(-8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ── RESPONSIVE ── */
+/* ==========================================================
+   ✅ CRITICAL FIX: NO GAP BELOW HEADER
+   The main content must start flush with the header bottom
+========================================================== */
+.vc-header + main,
+.vc-header + * {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+/* Also fix the App shell — override any pt-24 on mobile */
+@media (max-width: 960px) {
+  main.flex-1 {
+    padding-top: 0 !important;
+  }
+}
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
 @media (max-width: 1024px) { .vc-header { font-size: 15px; } }
 @media (max-width: 768px)  { .vc-header { font-size: 14px; } }
 @media (max-width: 480px)  { .vc-header { font-size: 13px; } }
