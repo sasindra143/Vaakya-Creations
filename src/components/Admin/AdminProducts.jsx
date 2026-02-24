@@ -1,12 +1,18 @@
 /**
  * src/components/Admin/AdminProducts.jsx
- * ✅ All 10 categories | ✅ M/L/S/XL size selector in form
- * ✅ Add/Edit/Delete real-time | ✅ Search (typing only) | ✅ Fully mobile responsive
+ * ✅ FIXED: Input loses focus after 1 char — Field moved outside component tree
+ * ✅ FIXED: Removed shimmer/animation from inputs
+ * ✅ All 10 categories | M/L/S/XL size selector
+ * ✅ Add/Edit/Delete real-time | Search | Fully mobile responsive
  */
 
 import { useState, useMemo, useRef, useCallback } from "react";
 import { useProducts } from "../../context/ProductContext";
 import "./AdminProducts.css";
+
+/* ════════════════════════════════════════════════════════
+   CONSTANTS  (module-level — never re-created)
+════════════════════════════════════════════════════════ */
 
 export const ALL_CATEGORIES = [
   { value: "pattu-sarees",       label: "Pattu Sarees"       },
@@ -23,12 +29,47 @@ export const ALL_CATEGORIES = [
 
 const ALL_SIZES = ["XS", "S", "M", "L", "XL", "XXL", "Free Size"];
 
-const EMPTY = {
+const EMPTY_FORM = {
   name: "", category: "", price: "", oldPrice: "",
   stock: "", rating: "", description: "", image: "", sizes: [],
 };
 
-/* ─── DELETE MODAL ─── */
+/* ════════════════════════════════════════════════════════
+   FIELD — defined at MODULE LEVEL so it is NEVER
+   re-created on parent re-render → no focus loss
+════════════════════════════════════════════════════════ */
+
+/**
+ * @param {{ label:string, name:string, type?:string, placeholder?:string,
+ *           required?:boolean, value:string, error:string,
+ *           onChange:(val:string)=>void, step?:string }} props
+ */
+function FormField({ label, name, type = "text", placeholder, required, value, error, onChange, step }) {
+  return (
+    <div className="ap-field">
+      <label className="ap-label" htmlFor={`apf-${name}`}>
+        {label}{required && <span className="ap-req"> *</span>}
+      </label>
+      <input
+        id={`apf-${name}`}
+        className={`ap-input${error ? " err" : ""}`}
+        type={type}
+        value={value ?? ""}
+        onChange={e => onChange(e.target.value)}
+        placeholder={placeholder}
+        min={type === "number" ? "0" : undefined}
+        step={step}
+        autoComplete="off"
+      />
+      {error && <span className="ap-err-msg">⚠ {error}</span>}
+    </div>
+  );
+}
+
+/* ════════════════════════════════════════════════════════
+   DELETE MODAL  (module-level)
+════════════════════════════════════════════════════════ */
+
 function DeleteModal({ productName, onConfirm, onCancel }) {
   return (
     <div className="ap-overlay" onClick={onCancel}>
@@ -47,56 +88,82 @@ function DeleteModal({ productName, onConfirm, onCancel }) {
   );
 }
 
-/* ─── ADD / EDIT FORM MODAL ─── */
+/* ════════════════════════════════════════════════════════
+   PRODUCT FORM MODAL  (module-level — CRITICAL)
+   Field is NOT defined here — it lives at module scope
+   above, so React always sees it as the same component
+   type and NEVER unmounts/remounts it on state change.
+════════════════════════════════════════════════════════ */
+
 function ProductFormModal({ initial, onSave, onClose }) {
   const isEdit = !!initial?.id;
-  const [form, setFm] = useState(initial ? { ...initial, sizes: initial.sizes || [] } : { ...EMPTY });
-  const [errs, setEr] = useState({});
-  const [busy, setBusy] = useState(false);
+
+  const [form, setForm] = useState(() =>
+    initial ? { ...EMPTY_FORM, ...initial, sizes: initial.sizes || [] } : { ...EMPTY_FORM }
+  );
+  const [errs,    setErrs]    = useState({});
+  const [busy,    setBusy]    = useState(false);
   const [imgPrev, setImgPrev] = useState(initial?.image || "");
   const fileRef = useRef(null);
 
-  const set = (k, v) => {
-    setFm(f => ({ ...f, [k]: v }));
-    setEr(e => ({ ...e, [k]: "" }));
-  };
+  /* ── Generic field setter — clears that field's error ── */
+  const setField = useCallback((name, value) => {
+    setForm(prev => ({ ...prev, [name]: value }));
+    setErrs(prev => ({ ...prev, [name]: "" }));
+  }, []);
 
-  const toggleSize = (size) => {
-    setFm(f => {
-      const sizes = f.sizes || [];
+  /* ── Size toggle ── */
+  const toggleSize = useCallback((size) => {
+    setForm(prev => {
+      const sizes = prev.sizes || [];
       return {
-        ...f,
-        sizes: sizes.includes(size) ? sizes.filter(s => s !== size) : [...sizes, size]
+        ...prev,
+        sizes: sizes.includes(size)
+          ? sizes.filter(s => s !== size)
+          : [...sizes, size],
       };
     });
-  };
+  }, []);
 
+  /* ── Validation ── */
   const validate = () => {
     const e = {};
-    if (!form.name?.trim())   e.name     = "Product name is required";
-    if (!form.category)       e.category = "Select a category";
+    if (!form.name?.trim())
+      e.name = "Product name is required";
+    if (!form.category)
+      e.category = "Select a category";
     if (!form.price || isNaN(+form.price) || +form.price <= 0)
-                              e.price    = "Enter a valid price";
+      e.price = "Enter a valid price";
     if (form.stock === "" || isNaN(+form.stock) || +form.stock < 0)
-                              e.stock    = "Enter valid stock (0 or more)";
+      e.stock = "Enter valid stock (0 or more)";
     if (form.rating && (isNaN(+form.rating) || +form.rating < 1 || +form.rating > 5))
-                              e.rating   = "Rating must be 1–5";
+      e.rating = "Rating must be 1–5";
     return e;
   };
 
+  /* ── File upload ── */
   const handleFile = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = ev => { setImgPrev(ev.target.result); set("image", ev.target.result); };
+    reader.onload = ev => {
+      const result = ev.target.result;
+      setImgPrev(result);
+      setField("image", result);
+    };
     reader.readAsDataURL(file);
   };
 
-  const handleUrlChange = v => { set("image", v); setImgPrev(v); };
+  /* ── Image URL change ── */
+  const handleImageUrl = (v) => {
+    setField("image", v);
+    setImgPrev(v);
+  };
 
+  /* ── Submit ── */
   const handleSubmit = async () => {
     const e = validate();
-    if (Object.keys(e).length) { setEr(e); return; }
+    if (Object.keys(e).length) { setErrs(e); return; }
     setBusy(true);
     await new Promise(r => setTimeout(r, 280));
     onSave({
@@ -111,52 +178,54 @@ function ProductFormModal({ initial, onSave, onClose }) {
     setBusy(false);
   };
 
-  const Field = ({ label, name, type = "text", placeholder, required, half }) => (
-    <div className={`ap-field${half ? " ap-field-half" : ""}`}>
-      <label className="ap-label">{label}{required && <span className="ap-req"> *</span>}</label>
-      <input
-        className={`ap-input${errs[name] ? " err" : ""}`}
-        type={type}
-        value={form[name] ?? ""}
-        onChange={e => set(name, e.target.value)}
-        placeholder={placeholder}
-        min={type === "number" ? "0" : undefined}
-        step={name === "rating" ? "0.1" : undefined}
-        autoComplete="off"
-      />
-      {errs[name] && <span className="ap-err-msg">⚠ {errs[name]}</span>}
-    </div>
-  );
-
   return (
     <div className="ap-overlay" onClick={onClose}>
       <div className="ap-modal ap-form-modal" onClick={e => e.stopPropagation()}>
 
-        {/* Header */}
+        {/* ── Header ── */}
         <div className="ap-form-head">
           <div className="ap-form-head-left">
             <div className="ap-form-head-icon">{isEdit ? "✏️" : "✨"}</div>
             <div>
-              <h2 className="ap-form-title">{isEdit ? "Edit Product" : "Add New Product"}</h2>
-              <p className="ap-form-subtitle">{isEdit ? "Update product details below" : "Fill in the details to add to your store"}</p>
+              <h2 className="ap-form-title">
+                {isEdit ? "Edit Product" : "Add New Product"}
+              </h2>
+              <p className="ap-form-subtitle">
+                {isEdit ? "Update product details below" : "Fill in the details to add to your store"}
+              </p>
             </div>
           </div>
           <button className="ap-form-close" onClick={onClose} aria-label="Close">✕</button>
         </div>
 
-        {/* Body */}
+        {/* ── Body ── */}
         <div className="ap-form-body">
 
-          {/* Section: Basic Info */}
+          {/* BASIC INFO */}
           <div className="ap-section-label">Basic Information</div>
+
           <div className="ap-row-2">
-            <Field label="Product Name" name="name" placeholder="e.g. Royal Kanchipuram Silk Saree" required />
+            {/* ✅ FormField at module level — no unmount on re-render */}
+            <FormField
+              label="Product Name"
+              name="name"
+              placeholder="e.g. Royal Kanchipuram Silk Saree"
+              required
+              value={form.name}
+              error={errs.name || ""}
+              onChange={v => setField("name", v)}
+            />
+
+            {/* Category — inline since it's a <select> */}
             <div className="ap-field">
-              <label className="ap-label">Category<span className="ap-req"> *</span></label>
+              <label className="ap-label" htmlFor="apf-category">
+                Category<span className="ap-req"> *</span>
+              </label>
               <select
+                id="apf-category"
                 className={`ap-select${errs.category ? " err" : ""}`}
                 value={form.category}
-                onChange={e => set("category", e.target.value)}
+                onChange={e => setField("category", e.target.value)}
               >
                 <option value="">Select category...</option>
                 {ALL_CATEGORIES.map(c => (
@@ -167,29 +236,66 @@ function ProductFormModal({ initial, onSave, onClose }) {
             </div>
           </div>
 
-          {/* Description */}
+          {/* Description — inline textarea */}
           <div className="ap-field">
-            <label className="ap-label">Description</label>
+            <label className="ap-label" htmlFor="apf-description">Description</label>
             <textarea
+              id="apf-description"
               className="ap-textarea"
               rows={4}
               value={form.description ?? ""}
-              onChange={e => set("description", e.target.value)}
+              onChange={e => setField("description", e.target.value)}
               placeholder="Describe the product — fabric, occasion, design details, wash care..."
             />
             <span className="ap-char-hint">{(form.description || "").length} chars</span>
           </div>
 
-          {/* Section: Pricing */}
-          <div className="ap-section-label">Pricing & Inventory</div>
+          {/* PRICING */}
+          <div className="ap-section-label">Pricing &amp; Inventory</div>
+
           <div className="ap-row-4">
-            <Field label="Selling Price (₹)" name="price" type="number" placeholder="4999" required />
-            <Field label="Original Price (₹)" name="oldPrice" type="number" placeholder="7999" />
-            <Field label="Stock Qty" name="stock" type="number" placeholder="25" required />
-            <Field label="Rating (1–5)" name="rating" type="number" placeholder="4.5" />
+            <FormField
+              label="Selling Price (₹)"
+              name="price"
+              type="number"
+              placeholder="4999"
+              required
+              value={form.price}
+              error={errs.price || ""}
+              onChange={v => setField("price", v)}
+            />
+            <FormField
+              label="Original Price (₹)"
+              name="oldPrice"
+              type="number"
+              placeholder="7999"
+              value={form.oldPrice}
+              error={errs.oldPrice || ""}
+              onChange={v => setField("oldPrice", v)}
+            />
+            <FormField
+              label="Stock Qty"
+              name="stock"
+              type="number"
+              placeholder="25"
+              required
+              value={form.stock}
+              error={errs.stock || ""}
+              onChange={v => setField("stock", v)}
+            />
+            <FormField
+              label="Rating (1–5)"
+              name="rating"
+              type="number"
+              placeholder="4.5"
+              step="0.1"
+              value={form.rating}
+              error={errs.rating || ""}
+              onChange={v => setField("rating", v)}
+            />
           </div>
 
-          {/* Section: Sizes */}
+          {/* SIZES */}
           <div className="ap-section-label">Available Sizes</div>
           <div className="ap-size-picker">
             {ALL_SIZES.map(size => (
@@ -210,31 +316,51 @@ function ProductFormModal({ initial, onSave, onClose }) {
             </p>
           )}
 
-          {/* Section: Image */}
+          {/* IMAGE */}
           <div className="ap-section-label">Product Image</div>
+
           <div className="ap-field">
-            <label className="ap-label">Image URL</label>
+            <label className="ap-label" htmlFor="apf-image">Image URL</label>
             <input
+              id="apf-image"
               className="ap-input"
               type="text"
               value={form.image?.startsWith("data:") ? "" : (form.image || "")}
-              onChange={e => handleUrlChange(e.target.value)}
+              onChange={e => handleImageUrl(e.target.value)}
               placeholder="Paste image URL — https://..."
               autoComplete="off"
             />
           </div>
+
           <div className="ap-img-row">
-            <button type="button" className="ap-upload-btn" onClick={() => fileRef.current?.click()}>
+            <button
+              type="button"
+              className="ap-upload-btn"
+              onClick={() => fileRef.current?.click()}
+            >
               📁 Upload from Device
             </button>
-            <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif"
-              style={{ display: "none" }} onChange={handleFile} />
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/gif"
+              style={{ display: "none" }}
+              onChange={handleFile}
+            />
             {imgPrev && (
               <div className="ap-img-preview">
-                <img src={imgPrev} alt="Preview"
-                  onError={e => { e.target.src = "https://placehold.co/80x100?text=?"; }} />
-                <button type="button" className="ap-img-remove"
-                  onClick={() => { setImgPrev(""); set("image", ""); }}>✕</button>
+                <img
+                  src={imgPrev}
+                  alt="Preview"
+                  onError={e => { e.target.src = "https://placehold.co/80x100?text=?"; }}
+                />
+                <button
+                  type="button"
+                  className="ap-img-remove"
+                  onClick={() => { setImgPrev(""); setField("image", ""); }}
+                >
+                  ✕
+                </button>
                 <span className="ap-img-label">Preview</span>
               </div>
             )}
@@ -242,11 +368,20 @@ function ProductFormModal({ initial, onSave, onClose }) {
 
         </div>
 
-        {/* Footer */}
+        {/* ── Footer ── */}
         <div className="ap-form-foot">
-          <button className="ap-btn-ghost" onClick={onClose} disabled={busy}>Cancel</button>
-          <button className={`ap-btn-primary${busy ? " busy" : ""}`} onClick={handleSubmit} disabled={busy}>
-            {busy ? <><span className="ap-spinner" /> Saving…</> : isEdit ? "✓ Update Product" : "✨ Add Product"}
+          <button className="ap-btn-ghost" onClick={onClose} disabled={busy}>
+            Cancel
+          </button>
+          <button
+            className={`ap-btn-primary${busy ? " busy" : ""}`}
+            onClick={handleSubmit}
+            disabled={busy}
+          >
+            {busy
+              ? <><span className="ap-spinner" /> Saving…</>
+              : isEdit ? "✓ Update Product" : "✨ Add Product"
+            }
           </button>
         </div>
 
@@ -255,7 +390,10 @@ function ProductFormModal({ initial, onSave, onClose }) {
   );
 }
 
-/* ─── MAIN COMPONENT ─── */
+/* ════════════════════════════════════════════════════════
+   MAIN PAGE COMPONENT
+════════════════════════════════════════════════════════ */
+
 export default function AdminProducts() {
   const { products, addProduct, updateProduct, deleteProduct } = useProducts();
 
@@ -290,7 +428,7 @@ export default function AdminProducts() {
     return list;
   }, [products, search, catFilter, sortKey]);
 
-  const handleSave = data => {
+  const handleSave = useCallback(data => {
     if (editTarget) {
       updateProduct(editTarget.id, data);
       flash("✅ Product updated successfully!");
@@ -300,17 +438,17 @@ export default function AdminProducts() {
     }
     setShowForm(false);
     setEditTarget(null);
-  };
+  }, [editTarget, addProduct, updateProduct, flash]);
 
   const openAdd  = () => { setEditTarget(null); setShowForm(true); };
   const openEdit = p  => { setEditTarget(p);    setShowForm(true); };
 
-  const confirmDelete = () => {
+  const confirmDelete = useCallback(() => {
     if (!delTarget) return;
     deleteProduct(delTarget.id);
     flash(`🗑️ "${delTarget.name}" has been deleted.`, "error");
     setDelTarget(null);
-  };
+  }, [delTarget, deleteProduct, flash]);
 
   const disc     = p => p.oldPrice ? Math.round(((p.oldPrice - p.price) / p.oldPrice) * 100) : 0;
   const catLabel = k => ALL_CATEGORIES.find(c => c.value === k)?.label || k || "—";
@@ -330,7 +468,9 @@ export default function AdminProducts() {
       <div className="ap-page-header">
         <div className="ap-header-left">
           <h1 className="ap-page-title">Products</h1>
-          <p className="ap-page-sub">{products.length} product{products.length !== 1 ? "s" : ""} in your store</p>
+          <p className="ap-page-sub">
+            {products.length} product{products.length !== 1 ? "s" : ""} in your store
+          </p>
         </div>
         <button className="ap-btn-primary ap-add-btn" onClick={openAdd}>
           <span>+</span> Add Product
@@ -375,11 +515,21 @@ export default function AdminProducts() {
             spellCheck={false}
           />
         </div>
-        <select className="ap-filter-sel" value={catFilter} onChange={e => setCatFilter(e.target.value)}>
+        <select
+          className="ap-filter-sel"
+          value={catFilter}
+          onChange={e => setCatFilter(e.target.value)}
+        >
           <option value="">All Categories</option>
-          {ALL_CATEGORIES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
+          {ALL_CATEGORIES.map(c => (
+            <option key={c.value} value={c.value}>{c.label}</option>
+          ))}
         </select>
-        <select className="ap-filter-sel" value={sortKey} onChange={e => setSortKey(e.target.value)}>
+        <select
+          className="ap-filter-sel"
+          value={sortKey}
+          onChange={e => setSortKey(e.target.value)}
+        >
           <option value="newest">Newest First</option>
           <option value="oldest">Oldest First</option>
           <option value="price-asc">Price: Low → High</option>
@@ -388,7 +538,10 @@ export default function AdminProducts() {
           <option value="stock-low">Low Stock First</option>
         </select>
         {(search || catFilter) && (
-          <button className="ap-clear-btn" onClick={() => { setSearch(""); setCatFilter(""); }}>
+          <button
+            className="ap-clear-btn"
+            onClick={() => { setSearch(""); setCatFilter(""); }}
+          >
             ✕ Clear
           </button>
         )}
@@ -399,7 +552,9 @@ export default function AdminProducts() {
         <div className="ap-zero">
           <div className="ap-zero-icon">📦</div>
           <h3 className="ap-zero-title">No products yet</h3>
-          <p className="ap-zero-sub">Add your first product and it will instantly appear on your store.</p>
+          <p className="ap-zero-sub">
+            Add your first product and it will instantly appear on your store.
+          </p>
           <button className="ap-btn-primary" onClick={openAdd}>✨ Add First Product</button>
         </div>
       ) : displayed.length === 0 ? (
@@ -407,7 +562,12 @@ export default function AdminProducts() {
           <div className="ap-zero-icon">🔍</div>
           <h3 className="ap-zero-title">No matches found</h3>
           <p className="ap-zero-sub">Try a different search term or category.</p>
-          <button className="ap-btn-ghost" onClick={() => { setSearch(""); setCatFilter(""); }}>Clear Filters</button>
+          <button
+            className="ap-btn-ghost"
+            onClick={() => { setSearch(""); setCatFilter(""); }}
+          >
+            Clear Filters
+          </button>
         </div>
       ) : (
         <div className="ap-table-wrap">
@@ -427,8 +587,8 @@ export default function AdminProducts() {
             </thead>
             <tbody>
               {displayed.map(p => {
-                const d = disc(p);
-                const stock = Number(p.stock);
+                const d        = disc(p);
+                const stock    = Number(p.stock);
                 const stockOut = stock === 0;
                 const stockLow = stock > 0 && stock <= 5;
                 return (
@@ -436,8 +596,11 @@ export default function AdminProducts() {
                     <td className="ap-td-product">
                       <div className="ap-product-cell">
                         <div className="ap-thumb">
-                          <img src={p.image} alt={p.name}
-                            onError={e => { e.target.src = "https://placehold.co/44x54/f5ead8/7a4f20?text=?"; }} />
+                          <img
+                            src={p.image}
+                            alt={p.name}
+                            onError={e => { e.target.src = "https://placehold.co/44x54/f5ead8/7a4f20?text=?"; }}
+                          />
                         </div>
                         <div className="ap-product-text">
                           <span className="ap-product-name">{p.name}</span>
@@ -459,7 +622,9 @@ export default function AdminProducts() {
                     </td>
                     <td>
                       {p.sizes?.length > 0
-                        ? <div className="ap-sizes-cell">{p.sizes.map(s => <span key={s} className="ap-size-dot">{s}</span>)}</div>
+                        ? <div className="ap-sizes-cell">
+                            {p.sizes.map(s => <span key={s} className="ap-size-dot">{s}</span>)}
+                          </div>
                         : <span className="ap-dash">—</span>}
                     </td>
                     <td>
@@ -484,6 +649,7 @@ export default function AdminProducts() {
         </div>
       )}
 
+      {/* Modals */}
       {showForm && (
         <ProductFormModal
           initial={editTarget}
@@ -498,6 +664,7 @@ export default function AdminProducts() {
           onCancel={() => setDelTarget(null)}
         />
       )}
+
     </div>
   );
 }

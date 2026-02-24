@@ -4,11 +4,13 @@
  * ✅ Mobile drawer with backdrop — hamburger controlled from parent
  * ✅ All categories with mega/dropdowns
  * ✅ Wishlist badge
+ * ✅ CART icon with badge in mobile drawer ← NEW
  */
 
 import { useState, useRef, useEffect, useContext } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { WishlistContext } from "../../context/WishlistContext";
+import { CartContext } from "../../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
 import "./HeaderNav.css";
 
@@ -26,22 +28,30 @@ const CloseIcon = () => (
     <line x1="6" y1="6" x2="18" y2="18" />
   </svg>
 );
+const CartIcon = () => (
+  <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+    <line x1="3" y1="6" x2="21" y2="6" />
+    <path d="M16 10a4 4 0 0 1-8 0" />
+  </svg>
+);
 
 const CATEGORIES = {
   sarees: [
-    { label: "Pattu Sarees", slug: "pattu-sarees" },
-    { label: "Silk Sarees", slug: "silk-sarees" },
-    { label: "Fancy Sarees", slug: "fancy-sarees" },
+    { label: "Pattu Sarees",   slug: "pattu-sarees" },
+    { label: "Silk Sarees",    slug: "silk-sarees" },
+    { label: "Fancy Sarees",   slug: "fancy-sarees" },
   ],
   traditional: [
-    { label: "Lehengas", slug: "lehengas" },
+    { label: "Lehengas",       slug: "lehengas" },
     { label: "Anarkali Suits", slug: "anarkali-suits" },
-    { label: "Blouses", slug: "blouses" },
+    { label: "Blouses",        slug: "blouses" },
   ],
   western: [
     { label: "Dresses", slug: "dresses" },
-    { label: "Tops", slug: "tops" },
-    { label: "Kurtis", slug: "kurtis" },
+    { label: "Tops",    slug: "tops" },
+    { label: "Kurtis",  slug: "kurtis" },
   ],
   jewellery: [
     { label: "Handmade Jewellery", slug: "handmade-jewellery" },
@@ -98,7 +108,6 @@ function Dropdown({ items, onClose }) {
   );
 }
 
-/* ── Mobile Accordion ── */
 function MobAccordion({ title, items, onClose }) {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
@@ -123,16 +132,16 @@ function MobAccordion({ title, items, onClose }) {
 }
 
 const HeaderNav = ({ mobileMenuOpen, setMobileMenuOpen }) => {
-  const navigate = useNavigate();
-  const { wishlist } = useContext(WishlistContext);
-  const { currentUser, logout } = useAuth();
-  const [openMenu, setOpenMenu] = useState(null);
-  const navRef = useRef(null);
+  const navigate                        = useNavigate();
+  const { wishlist }                    = useContext(WishlistContext);
+  const { cart, cartCount }             = useContext(CartContext);
+  const { currentUser, logout }         = useAuth();
+  const [openMenu, setOpenMenu]         = useState(null);
+  const navRef                          = useRef(null);
 
   const closeAll = () => setOpenMenu(null);
-  const toggle = (name) => setOpenMenu((p) => (p === name ? null : name));
+  const toggle   = (name) => setOpenMenu((p) => (p === name ? null : name));
 
-  /* Close dropdowns on outside click */
   useEffect(() => {
     const handler = (e) => {
       if (navRef.current && !navRef.current.contains(e.target)) closeAll();
@@ -141,7 +150,6 @@ const HeaderNav = ({ mobileMenuOpen, setMobileMenuOpen }) => {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  /* Esc closes everything */
   useEffect(() => {
     const onKey = (e) => {
       if (e.key === "Escape") { closeAll(); setMobileMenuOpen(false); }
@@ -150,7 +158,6 @@ const HeaderNav = ({ mobileMenuOpen, setMobileMenuOpen }) => {
     return () => window.removeEventListener("keydown", onKey);
   }, [setMobileMenuOpen]);
 
-  /* Lock body scroll when drawer open */
   useEffect(() => {
     document.body.style.overflow = mobileMenuOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
@@ -162,6 +169,7 @@ const HeaderNav = ({ mobileMenuOpen, setMobileMenuOpen }) => {
   };
 
   const wishCount = wishlist?.length ?? 0;
+  const cartQty   = cartCount ?? 0;
 
   return (
     <>
@@ -218,19 +226,34 @@ const HeaderNav = ({ mobileMenuOpen, setMobileMenuOpen }) => {
         aria-label="Mobile navigation"
         aria-hidden={!mobileMenuOpen}
       >
-        {/* Drawer header */}
+        {/* ── Drawer Header ── */}
         <div className="hn-mob-head">
           <span className="hn-mob-logo">Vaakya Creations</span>
-          <button
-            className="hn-mob-close"
-            onClick={() => setMobileMenuOpen(false)}
-            aria-label="Close menu"
-          >
-            <CloseIcon />
-          </button>
+          <div className="hn-mob-head-actions">
+            {/* ★ CART ICON in drawer header ★ */}
+            <button
+              className="hn-mob-cart-icon-btn"
+              onClick={() => handleMobileLink("/cart")}
+              aria-label={`Cart — ${cartQty} items`}
+            >
+              <CartIcon />
+              {cartQty > 0 && (
+                <span className="hn-mob-cart-badge">
+                  {cartQty > 99 ? "99+" : cartQty}
+                </span>
+              )}
+            </button>
+            <button
+              className="hn-mob-close"
+              onClick={() => setMobileMenuOpen(false)}
+              aria-label="Close menu"
+            >
+              <CloseIcon />
+            </button>
+          </div>
         </div>
 
-        {/* User greeting if logged in */}
+        {/* ── User greeting if logged in ── */}
         {currentUser && (
           <div className="hn-mob-user">
             <div className="hn-mob-avatar">
@@ -243,7 +266,7 @@ const HeaderNav = ({ mobileMenuOpen, setMobileMenuOpen }) => {
           </div>
         )}
 
-        {/* Nav */}
+        {/* ── Nav ── */}
         <nav className="hn-mob-nav">
           <button className="hn-mob-link" onClick={() => handleMobileLink("/")}>🏠 Home</button>
 
@@ -274,6 +297,21 @@ const HeaderNav = ({ mobileMenuOpen, setMobileMenuOpen }) => {
               <button className="hn-mob-link hn-mob-signup" onClick={() => handleMobileLink("/signup")}>Create Account →</button>
             </>
           )}
+
+          {/* ★ CART ROW in nav list ★ */}
+          <span className="hn-mob-section">Quick Access</span>
+          <button
+            className="hn-mob-link hn-mob-cart-link"
+            onClick={() => handleMobileLink("/cart")}
+          >
+            <span className="hn-mob-cart-row">
+              <CartIcon />
+              <span>My Cart</span>
+            </span>
+            {cartQty > 0 && (
+              <span className="hn-mob-cart-count">{cartQty > 99 ? "99+" : cartQty}</span>
+            )}
+          </button>
 
           {/* Wishlist */}
           <button className="hn-mob-link hn-mob-wish" onClick={() => handleMobileLink("/wishlist")}>
