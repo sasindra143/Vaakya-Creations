@@ -61,7 +61,7 @@ const Stars = ({ rating = 0 }) => (
   </div>
 );
 
-export default function ProductDetails() {
+export default function Productdetails() {
   const { id }     = useParams();
   const navigate   = useNavigate();
 
