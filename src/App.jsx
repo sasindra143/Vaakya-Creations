@@ -8,11 +8,7 @@
  * ✅ Header hidden on admin routes
  * ✅ RequireAuth guard for protected pages
  * ✅ All original public routes preserved
- *
- * FIX: Removed duplicate imports of Signinpage / Signuppage.
- *      Import names now match the actual default export names in each file:
- *        ./pages/SignInPage  → exports default SignInPage
- *        ./pages/SignUpPage  → exports default SignUpPage
+ * ✅ FIX: All import paths match exact filenames (case-sensitive for Netlify/Linux)
  */
 
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
@@ -44,9 +40,10 @@ import OrderHistory       from "./pages/OrderHistory";
 import SearchPage         from "./pages/SearchPage";
 
 /* ── Auth Pages ── */
-/* FIXED: single import per page, name matches the file's default export exactly */
-import SignInPage from "./pages/Signinpage";
-import SignUpPage from "./pages/Signuppage";
+/* IMPORTANT: filename on disk must be EXACTLY "SignInPage.jsx" and "SignUpPage.jsx"
+   Netlify runs on Linux (case-sensitive). "signinpage.jsx" ≠ "SignInPage.jsx"       */
+import SignInPage from "./pages/SignInPage";
+import SignUpPage from "./pages/SignUpPage";
 
 /* ── Admin Pages ── */
 import AdminLayout    from "./components/Admin/AdminLayout";
@@ -126,8 +123,8 @@ function AppContent() {
               Login  → email + password
               Signup → name, email, whatsapp, password
           ════════════════════════════════ */}
-          <Route path="/signin" element={<Signinpage />} />
-          <Route path="/signup" element={<Signuppage />} />
+          <Route path="/signin" element={<SignInPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
 
           {/* ════════════════════════════════
               ADMIN ROUTES
@@ -148,7 +145,7 @@ function AppContent() {
             <Route index            element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="products"  element={<AdminProducts />} />
-            <Route path="orders"    element={<AdminDashboard />} />  {/* swap with AdminOrders when ready */}
+            <Route path="orders"    element={<AdminDashboard />} />
             <Route path="users"     element={<AdminUsers />} />
           </Route>
 
