@@ -8,6 +8,11 @@
  * ✅ Header hidden on admin routes
  * ✅ RequireAuth guard for protected pages
  * ✅ All original public routes preserved
+ *
+ * FIX: Removed duplicate imports of Signinpage / Signuppage.
+ *      Import names now match the actual default export names in each file:
+ *        ./pages/SignInPage  → exports default SignInPage
+ *        ./pages/SignUpPage  → exports default SignUpPage
  */
 
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
@@ -38,7 +43,8 @@ import ContactPage        from "./pages/Contact/ContactPage";
 import OrderHistory       from "./pages/OrderHistory";
 import SearchPage         from "./pages/SearchPage";
 
-/* ── Auth Pages (NEW) ── */
+/* ── Auth Pages ── */
+/* FIXED: single import per page, name matches the file's default export exactly */
 import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
 
@@ -46,13 +52,10 @@ import SignUpPage from "./pages/SignUpPage";
 import AdminLayout    from "./components/Admin/AdminLayout";
 import AdminDashboard from "./components/Admin/AdminDashboard";
 import AdminProducts  from "./components/Admin/AdminProducts";
-import AdminUsers     from "./components/Admin/AdminUsers";   // NEW
+import AdminUsers     from "./components/Admin/AdminUsers";
 
 /* ── Utilities ── */
 import ScrollToTop from "./components/common/ScrollToTop";
-
-import Signinpage from "./pages/Signinpage";
-import Signuppage from "./pages/Signuppage";
 
 /* ─────────────────────────────────────────────────────────────
    ROUTE GUARDS
@@ -119,14 +122,12 @@ function AppContent() {
           <Route path="/contact"                element={<ContactPage />} />
 
           {/* ════════════════════════════════
-              AUTH ROUTES  (NEW)
+              AUTH ROUTES
               Login  → email + password
               Signup → name, email, whatsapp, password
           ════════════════════════════════ */}
-          <Route path="/signin" element={<Signinpage />} />
-          <Route path="/signup" element={<Signuppage />} />
-
-          
+          <Route path="/signin" element={<SignInPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
 
           {/* ════════════════════════════════
               ADMIN ROUTES
@@ -134,7 +135,7 @@ function AppContent() {
               /admin/dashboard  — stats overview
               /admin/products   — product manager
               /admin/orders     — order list
-              /admin/users      — registered users (NEW)
+              /admin/users      — registered users
           ════════════════════════════════ */}
           <Route
             path="/admin"
@@ -144,11 +145,11 @@ function AppContent() {
               </AdminRoute>
             }
           >
-            <Route index          element={<Navigate to="dashboard" replace />} />
+            <Route index            element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="products"  element={<AdminProducts />} />
             <Route path="orders"    element={<AdminDashboard />} />  {/* swap with AdminOrders when ready */}
-            <Route path="users"     element={<AdminUsers />} />       {/* NEW */}
+            <Route path="users"     element={<AdminUsers />} />
           </Route>
 
           {/* ════════════════════════════════

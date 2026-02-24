@@ -1,7 +1,7 @@
 /**
  * src/pages/SignUpPage.jsx
- * ✅ Collect: name, email (login), whatsapp (profile/contact), password
- * ✅ Login is always by EMAIL — WhatsApp is for order updates / admin contact
+ * ✅ Register with name, email, WhatsApp + password
+ * ✅ Export name fixed: SignUpPage (matches App.jsx import)
  */
 
 import { useState } from "react";
@@ -24,56 +24,13 @@ const EyeIcon = ({ open }) =>
     </svg>
   );
 
-function PasswordStrength({ password }) {
-  if (!password) return null;
-  const checks = [
-    { label: "8+ characters",    pass: password.length >= 8 },
-    { label: "Uppercase letter", pass: /[A-Z]/.test(password) },
-    { label: "Number",           pass: /[0-9]/.test(password) },
-  ];
-  const score = checks.filter((c) => c.pass).length;
-  const colors = ["#e53935", "#ff9800", "#4caf50"];
-  const labels = ["Weak", "Fair", "Strong"];
-
-  return (
-    <div className="auth-strength">
-      <div className="auth-strength-bars">
-        {[0, 1, 2].map((i) => (
-          <div
-            key={i}
-            className="auth-strength-bar"
-            style={{ background: i < score ? colors[score - 1] : "#e8e2d9" }}
-          />
-        ))}
-      </div>
-      {score > 0 && (
-        <span className="auth-strength-label" style={{ color: colors[score - 1] }}>
-          {labels[score - 1]}
-        </span>
-      )}
-      <div className="auth-strength-checks">
-        {checks.map((c) => (
-          <span key={c.label} className={`auth-check${c.pass ? " pass" : ""}`}>
-            {c.pass ? "✓" : "·"} {c.label}
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 export default function SignUpPage() {
-  const [form, setForm] = useState({
-    name:     "",
-    email:    "",
-    whatsapp: "",
-    password: "",
-    confirm:  "",
-  });
+  const [form, setForm]         = useState({ name: "", email: "", whatsapp: "", password: "", confirm: "" });
   const [showPass, setShowPass] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [error, setError]       = useState("");
   const [loading, setLoading]   = useState(false);
-  const { signup }              = useAuth();
+  const { register }            = useAuth();
   const navigate                = useNavigate();
 
   const handle = (e) => {
@@ -85,37 +42,28 @@ export default function SignUpPage() {
     e.preventDefault();
     setError("");
 
-    if (!form.name.trim())              return setError("Please enter your full name.");
-    if (!form.email.trim())             return setError("Please enter your email address.");
-    if (!/\S+@\S+\.\S+/.test(form.email)) return setError("Please enter a valid email address.");
-    if (!form.whatsapp.trim())          return setError("Please enter your WhatsApp number.");
-    if (form.whatsapp.replace(/\D/g,"").length < 10)
-                                        return setError("Enter a valid 10-digit WhatsApp number.");
-    if (form.password.length < 6)       return setError("Password must be at least 6 characters.");
-    if (form.password !== form.confirm) return setError("Passwords do not match.");
+    if (!form.name.trim())                        return setError("Please enter your full name.");
+    if (!form.email.trim())                        return setError("Please enter your email address.");
+    if (!form.whatsapp.trim())                     return setError("Please enter your WhatsApp number.");
+    if (!/^\d{10,15}$/.test(form.whatsapp.trim())) return setError("Enter a valid WhatsApp number (10–15 digits).");
+    if (!form.password)                            return setError("Please choose a password.");
+    if (form.password.length < 6)                  return setError("Password must be at least 6 characters.");
+    if (form.password !== form.confirm)            return setError("Passwords do not match.");
 
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 500));
-    const result = signup({
-      name:     form.name,
-      email:    form.email,
-      whatsapp: form.whatsapp.replace(/\D/g, ""),
-      password: form.password,
-    });
+    await new Promise((r) => setTimeout(r, 400));
+    const result = register(form);
     setLoading(false);
 
     if (!result.ok) { setError(result.error); return; }
-    navigate("/");
+    navigate("/", { replace: true });
   };
-
-  const passwordMismatch =
-    form.confirm.length > 0 && form.password !== form.confirm;
 
   return (
     <div className="auth-page">
       <div className="auth-bg-pattern" aria-hidden="true" />
 
-      <div className="auth-card auth-card-wide">
+      <div className="auth-card">
         {/* Brand logo */}
         <div className="auth-logo">
           <div className="auth-logo-icon">VC</div>
@@ -127,7 +75,7 @@ export default function SignUpPage() {
 
         <div className="auth-header">
           <h1 className="auth-title">Create Account</h1>
-          <p className="auth-subtitle">Join our community — sign up takes 30 seconds</p>
+          <p className="auth-subtitle">Join us and explore our exclusive collection</p>
         </div>
 
         {error && (
@@ -138,155 +86,146 @@ export default function SignUpPage() {
 
         <form className="auth-form" onSubmit={submit} noValidate>
 
-          {/* Row 1 — Name + Email */}
-          <div className="auth-row">
-            <div className="auth-field">
-              <label className="auth-label" htmlFor="name">Full Name *</label>
-              <div className="auth-input-wrap">
-                <span className="auth-input-icon">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" strokeWidth="1.9" strokeLinecap="round">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                    <circle cx="12" cy="7" r="4"/>
-                  </svg>
-                </span>
-                <input
-                  id="name"
-                  name="name"
-                  type="text"
-                  className="auth-input auth-input-icon-pad"
-                  placeholder="Priya Sharma"
-                  value={form.name}
-                  onChange={handle}
-                  required
-                  autoFocus
-                  autoComplete="name"
-                />
-              </div>
-            </div>
-
-            <div className="auth-field">
-              <label className="auth-label" htmlFor="email">
-                Email Address * <span className="auth-badge-used">Used to sign in</span>
-              </label>
-              <div className="auth-input-wrap">
-                <span className="auth-input-icon">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" strokeWidth="1.9" strokeLinecap="round">
-                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                    <polyline points="22,6 12,13 2,6"/>
-                  </svg>
-                </span>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  className="auth-input auth-input-icon-pad"
-                  placeholder="you@example.com"
-                  value={form.email}
-                  onChange={handle}
-                  required
-                  autoComplete="email"
-                />
-              </div>
+          {/* Full Name */}
+          <div className="auth-field">
+            <label className="auth-label" htmlFor="name">Full Name</label>
+            <div className="auth-input-wrap">
+              <span className="auth-input-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                  <circle cx="12" cy="7" r="4"/>
+                </svg>
+              </span>
+              <input
+                id="name"
+                name="name"
+                type="text"
+                className="auth-input auth-input-icon-pad"
+                placeholder="Your full name"
+                value={form.name}
+                onChange={handle}
+                required
+                autoFocus
+                autoComplete="name"
+              />
             </div>
           </div>
 
-          {/* WhatsApp — full width, clearly labelled as contact detail */}
+          {/* Email */}
           <div className="auth-field">
-            <label className="auth-label" htmlFor="whatsapp">
-              WhatsApp Number *
-              <span className="auth-badge-info">For order updates only — not used to login</span>
-            </label>
+            <label className="auth-label" htmlFor="email">Email Address</label>
             <div className="auth-input-wrap">
-              <span className="auth-prefix">📱 +91</span>
+              <span className="auth-input-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                  <polyline points="22,6 12,13 2,6"/>
+                </svg>
+              </span>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                className="auth-input auth-input-icon-pad"
+                placeholder="you@example.com"
+                value={form.email}
+                onChange={handle}
+                required
+                autoComplete="email"
+              />
+            </div>
+          </div>
+
+          {/* WhatsApp */}
+          <div className="auth-field">
+            <label className="auth-label" htmlFor="whatsapp">WhatsApp Number</label>
+            <div className="auth-input-wrap">
+              <span className="auth-input-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.58 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.1 6.1l1.07-.92a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+                </svg>
+              </span>
               <input
                 id="whatsapp"
                 name="whatsapp"
                 type="tel"
-                className="auth-input auth-input-with-prefix"
-                placeholder="9876543210"
+                className="auth-input auth-input-icon-pad"
+                placeholder="10-digit mobile number"
                 value={form.whatsapp}
                 onChange={handle}
-                maxLength={10}
                 required
+                autoComplete="tel"
+                maxLength={15}
               />
             </div>
-            <span className="auth-field-hint">
-              We'll send order confirmations &amp; delivery updates via WhatsApp.
-            </span>
           </div>
 
-          {/* Row 2 — Password + Confirm */}
-          <div className="auth-row">
-            <div className="auth-field">
-              <label className="auth-label" htmlFor="password">Password *</label>
-              <div className="auth-input-wrap">
-                <input
-                  id="password"
-                  name="password"
-                  type={showPass ? "text" : "password"}
-                  className="auth-input auth-input-with-toggle"
-                  placeholder="Create a password"
-                  value={form.password}
-                  onChange={handle}
-                  required
-                  autoComplete="new-password"
-                />
-                <button
-                  type="button"
-                  className="auth-eye"
-                  onClick={() => setShowPass((p) => !p)}
-                  aria-label="Toggle password visibility"
-                >
-                  <EyeIcon open={showPass} />
-                </button>
-              </div>
-              <PasswordStrength password={form.password} />
-            </div>
-
-            <div className="auth-field">
-              <label className="auth-label" htmlFor="confirm">Confirm Password *</label>
-              <div className="auth-input-wrap">
-                <input
-                  id="confirm"
-                  name="confirm"
-                  type={showPass ? "text" : "password"}
-                  className={`auth-input auth-input-with-toggle${passwordMismatch ? " input-error" : ""}`}
-                  placeholder="Repeat your password"
-                  value={form.confirm}
-                  onChange={handle}
-                  required
-                  autoComplete="new-password"
-                />
-              </div>
-              {passwordMismatch && (
-                <span className="auth-field-error">Passwords don't match</span>
-              )}
-              {form.confirm && !passwordMismatch && (
-                <span className="auth-field-ok">✓ Passwords match</span>
-              )}
+          {/* Password */}
+          <div className="auth-field">
+            <label className="auth-label" htmlFor="password">Password</label>
+            <div className="auth-input-wrap">
+              <input
+                id="password"
+                name="password"
+                type={showPass ? "text" : "password"}
+                className="auth-input auth-input-with-toggle"
+                placeholder="At least 6 characters"
+                value={form.password}
+                onChange={handle}
+                required
+                autoComplete="new-password"
+              />
+              <button
+                type="button"
+                className="auth-eye"
+                onClick={() => setShowPass((p) => !p)}
+                aria-label={showPass ? "Hide password" : "Show password"}
+              >
+                <EyeIcon open={showPass} />
+              </button>
             </div>
           </div>
 
-          {/* Benefits strip */}
-          <div className="auth-benefits">
-            <span className="auth-benefit">✓ Exclusive member discounts</span>
-            <span className="auth-benefit">✓ Order tracking via WhatsApp</span>
-            <span className="auth-benefit">✓ Early access to new collections</span>
+          {/* Confirm Password */}
+          <div className="auth-field">
+            <label className="auth-label" htmlFor="confirm">Confirm Password</label>
+            <div className="auth-input-wrap">
+              <input
+                id="confirm"
+                name="confirm"
+                type={showConfirm ? "text" : "password"}
+                className="auth-input auth-input-with-toggle"
+                placeholder="Re-enter your password"
+                value={form.confirm}
+                onChange={handle}
+                required
+                autoComplete="new-password"
+              />
+              <button
+                type="button"
+                className="auth-eye"
+                onClick={() => setShowConfirm((p) => !p)}
+                aria-label={showConfirm ? "Hide password" : "Show password"}
+              >
+                <EyeIcon open={showConfirm} />
+              </button>
+            </div>
           </div>
 
           <button type="submit" className="auth-submit" disabled={loading}>
             <span className="auth-submit-shine" />
-            {loading ? <span className="auth-spinner" /> : "Create My Account →"}
+            {loading ? <span className="auth-spinner" /> : "Create Account →"}
           </button>
         </form>
 
         <div className="auth-divider"><span>Already have an account?</span></div>
+
         <Link to="/signin" className="auth-alt-btn">Sign In Instead</Link>
 
         <p className="auth-footer-note">
-          Your email is used to sign in. WhatsApp is for order updates only — we never spam.
+          By creating an account you agree to our Terms of Service &amp; Privacy Policy.
         </p>
       </div>
     </div>

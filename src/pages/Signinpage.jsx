@@ -1,6 +1,7 @@
 /**
  * src/pages/SignInPage.jsx
  * ✅ Login with EMAIL + password (not WhatsApp)
+ * ✅ Export name fixed: SignInPage (matches App.jsx import)
  */
 
 import { useState } from "react";
@@ -23,7 +24,7 @@ const EyeIcon = ({ open }) =>
     </svg>
   );
 
-export default function Signinpage() {
+export default function SignInPage() {
   const [form, setForm]         = useState({ email: "", password: "" });
   const [showPass, setShowPass] = useState(false);
   const [error, setError]       = useState("");
