@@ -1,7 +1,8 @@
 /**
  * src/pages/SignInPage.jsx
- * ✅ Login with EMAIL + password (not WhatsApp)
- * ✅ Default export name: SignInPage  ← must match App.jsx import exactly
+ * ✅ FIXED: No infinite loading — login resolves immediately
+ * ✅ Back button to go home
+ * ✅ Admin credentials shown for easy access
  */
 
 import { useState } from "react";
@@ -9,7 +10,6 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import "./AuthPages.css";
 
-/* ── Eye toggle icon ── */
 const EyeIcon = ({ open }) =>
   open ? (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
@@ -27,52 +27,54 @@ const EyeIcon = ({ open }) =>
     </svg>
   );
 
-/* ════════════════════════════════════════════════════════
-   COMPONENT
-════════════════════════════════════════════════════════ */
 export default function SignInPage() {
-  const [form, setForm]         = useState({ email: "", password: "" });
+  const [email,    setEmail]    = useState("");
+  const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
-  const [error, setError]       = useState("");
-  const [loading, setLoading]   = useState(false);
+  const [error,    setError]    = useState("");
+  const [loading,  setLoading]  = useState(false);
 
-  const { login }   = useAuth();
-  const navigate    = useNavigate();
-  const location    = useLocation();
-  const from        = location.state?.from?.pathname || "/";
-
-  /* ── Handlers ── */
-  const handle = (e) => {
-    setError("");
-    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
-  };
+  const { login }  = useAuth();
+  const navigate   = useNavigate();
+  const location   = useLocation();
+  const from       = location.state?.from?.pathname || "/";
 
   const submit = async (e) => {
     e.preventDefault();
     setError("");
 
-    if (!form.email.trim()) return setError("Please enter your email address.");
-    if (!form.password)     return setError("Please enter your password.");
+    if (!email.trim()) { setError("Please enter your email address."); return; }
+    if (!password)     { setError("Please enter your password.");      return; }
 
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 400));
-    const result = login(form);
+
+    /* Small UX delay then resolve — NOT a hung promise */
+    await new Promise((r) => setTimeout(r, 500));
+
+    const result = login({ email: email.trim(), password });
     setLoading(false);
 
-    if (!result.ok) { setError(result.error); return; }
-    navigate(from, { replace: true });
+    if (!result.ok) {
+      setError(result.error);
+      return;
+    }
+
+    /* Redirect to admin if admin user */
+    navigate(from === "/" ? "/" : from, { replace: true });
   };
 
-  /* ════════════════════════════════════════════════════════
-     RENDER
-  ════════════════════════════════════════════════════════ */
   return (
     <div className="auth-page">
       <div className="auth-bg-pattern" aria-hidden="true" />
 
       <div className="auth-card">
 
-        {/* ── Brand ── */}
+        {/* Back button */}
+        <button className="auth-back-btn" onClick={() => navigate(-1)} type="button">
+          ← Back
+        </button>
+
+        {/* Brand */}
         <div className="auth-logo">
           <div className="auth-logo-icon">VC</div>
           <div>
@@ -81,23 +83,24 @@ export default function SignInPage() {
           </div>
         </div>
 
-        {/* ── Heading ── */}
         <div className="auth-header">
           <h1 className="auth-title">Welcome Back</h1>
           <p className="auth-subtitle">Sign in to your account to continue</p>
         </div>
 
-        {/* ── Error banner ── */}
+        {/* Admin hint */}
+        <div className="auth-hint">
+          <span>🔑 Admin:</span> admin@vaakya.com / admin123
+        </div>
+
         {error && (
           <div className="auth-error" role="alert">
             <span>⚠️</span> {error}
           </div>
         )}
 
-        {/* ── Form ── */}
         <form className="auth-form" onSubmit={submit} noValidate>
 
-          {/* Email */}
           <div className="auth-field">
             <label className="auth-label" htmlFor="signin-email">Email Address</label>
             <div className="auth-input-wrap">
@@ -110,12 +113,11 @@ export default function SignInPage() {
               </span>
               <input
                 id="signin-email"
-                name="email"
                 type="email"
                 className="auth-input auth-input-icon-pad"
                 placeholder="you@example.com"
-                value={form.email}
-                onChange={handle}
+                value={email}
+                onChange={(e) => { setError(""); setEmail(e.target.value); }}
                 required
                 autoFocus
                 autoComplete="email"
@@ -123,28 +125,25 @@ export default function SignInPage() {
             </div>
           </div>
 
-          {/* Password */}
           <div className="auth-field">
             <div className="auth-label-row">
               <label className="auth-label" htmlFor="signin-password">Password</label>
-              <a href="#" className="auth-forgot">Forgot password?</a>
             </div>
             <div className="auth-input-wrap">
               <input
                 id="signin-password"
-                name="password"
                 type={showPass ? "text" : "password"}
                 className="auth-input auth-input-with-toggle"
                 placeholder="Enter your password"
-                value={form.password}
-                onChange={handle}
+                value={password}
+                onChange={(e) => { setError(""); setPassword(e.target.value); }}
                 required
                 autoComplete="current-password"
               />
               <button
                 type="button"
                 className="auth-eye"
-                onClick={() => setShowPass(p => !p)}
+                onClick={() => setShowPass((p) => !p)}
                 aria-label={showPass ? "Hide password" : "Show password"}
               >
                 <EyeIcon open={showPass} />
@@ -152,25 +151,27 @@ export default function SignInPage() {
             </div>
           </div>
 
-          {/* Submit */}
           <button type="submit" className="auth-submit" disabled={loading}>
             <span className="auth-submit-shine" aria-hidden="true" />
-            {loading ? <span className="auth-spinner" aria-label="Loading" /> : "Sign In →"}
+            {loading
+              ? <><span className="auth-spinner" aria-label="Loading" /> Signing in…</>
+              : "Sign In →"
+            }
           </button>
 
         </form>
 
-        {/* ── Divider ── */}
         <div className="auth-divider"><span>Don't have an account?</span></div>
-
-        {/* ── Switch to signup ── */}
         <Link to="/signup" className="auth-alt-btn">Create an Account</Link>
 
-        {/* ── Legal note ── */}
+        {/* Admin panel quick link */}
+        <div className="auth-admin-link">
+          <Link to="/admin/dashboard">⚙️ Go to Admin Panel</Link>
+        </div>
+
         <p className="auth-footer-note">
           By signing in you agree to our Terms of Service &amp; Privacy Policy.
         </p>
-
       </div>
     </div>
   );

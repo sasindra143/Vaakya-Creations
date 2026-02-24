@@ -1,91 +1,131 @@
 /**
  * src/context/AuthContext.jsx
- * Auth with WhatsApp number — stores users in localStorage
+ * ✅ FIXED: login() now actually resolves — no infinite loading
+ * ✅ Users persisted to localStorage
+ * ✅ Admin seeded: admin@vaakya.com / admin123
+ * ✅ register() checks for duplicate email
  */
 
 import { createContext, useContext, useState, useEffect } from "react";
 
 const AuthContext = createContext(null);
 
+const STORAGE_KEY   = "vc_users";
+const SESSION_KEY   = "vc_session";
+
+/* ── Seed default admin ── */
+const DEFAULT_USERS = [
+  {
+    id:       "admin-001",
+    name:     "Admin",
+    email:    "admin@vaakya.com",
+    whatsapp: "9999999999",
+    password: "admin123",
+    role:     "admin",
+  },
+];
+
+function getUsers() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_USERS));
+      return DEFAULT_USERS;
+    }
+    const parsed = JSON.parse(raw);
+    /* Ensure admin always exists */
+    const hasAdmin = parsed.some((u) => u.email === "admin@vaakya.com");
+    if (!hasAdmin) {
+      const merged = [...DEFAULT_USERS, ...parsed];
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+      return merged;
+    }
+    return parsed;
+  } catch {
+    return DEFAULT_USERS;
+  }
+}
+
+function saveUsers(users) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(users));
+}
+
 export function AuthProvider({ children }) {
-  const [currentUser, setCurrentUser] = useState(null);
-  const [users, setUsers] = useState([]);
+  const [users,       setUsers]       = useState(getUsers);
+  const [currentUser, setCurrentUser] = useState(() => {
+    try {
+      const raw = localStorage.getItem(SESSION_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch { return null; }
+  });
 
-  /* Load from localStorage on mount */
+  /* Persist session */
   useEffect(() => {
-    const storedUsers = JSON.parse(localStorage.getItem("vc_users") || "[]");
-    const storedUser  = JSON.parse(localStorage.getItem("vc_current_user") || "null");
-    setUsers(storedUsers);
-    setCurrentUser(storedUser);
-  }, []);
+    if (currentUser) {
+      localStorage.setItem(SESSION_KEY, JSON.stringify(currentUser));
+    } else {
+      localStorage.removeItem(SESSION_KEY);
+    }
+  }, [currentUser]);
 
-  const saveUsers = (list) => {
-    setUsers(list);
-    localStorage.setItem("vc_users", JSON.stringify(list));
-  };
-
-  /* Signup */
-  const signup = ({ name, whatsapp, email, password }) => {
-    const existing = users.find((u) => u.whatsapp === whatsapp);
-    if (existing) return { ok: false, error: "WhatsApp number already registered." };
-
-    const newUser = {
-      id:        Date.now().toString(),
-      name,
-      whatsapp,
-      email:     email || "",
-      password,
-      role:      "user",
-      joinedAt:  new Date().toISOString(),
-      lastLogin: new Date().toISOString(),
-      isActive:  true,
-    };
-    const updated = [...users, newUser];
-    saveUsers(updated);
-    const safe = { ...newUser }; delete safe.password;
-    setCurrentUser(safe);
-    localStorage.setItem("vc_current_user", JSON.stringify(safe));
-    return { ok: true, user: safe };
-  };
-
-  /* Login */
-  const login = ({ whatsapp, password }) => {
-    const user = users.find((u) => u.whatsapp === whatsapp && u.password === password);
-    if (!user) return { ok: false, error: "Invalid WhatsApp number or password." };
-
-    const updated = users.map((u) =>
-      u.id === user.id ? { ...u, lastLogin: new Date().toISOString() } : u
+  /* ── LOGIN ── */
+  const login = ({ email, password }) => {
+    const allUsers = getUsers(); /* always read fresh */
+    const found = allUsers.find(
+      (u) =>
+        u.email.trim().toLowerCase() === email.trim().toLowerCase() &&
+        u.password === password
     );
-    saveUsers(updated);
-
-    const safe = { ...user, lastLogin: new Date().toISOString() }; delete safe.password;
+    if (!found) {
+      return { ok: false, error: "Invalid email or password. Please try again." };
+    }
+    const { password: _pw, ...safe } = found;
     setCurrentUser(safe);
-    localStorage.setItem("vc_current_user", JSON.stringify(safe));
-    return { ok: true, user: safe };
+    return { ok: true };
   };
 
-  /* Logout */
+  /* ── REGISTER ── */
+  const register = ({ name, email, whatsapp, password }) => {
+    const allUsers = getUsers();
+    const exists = allUsers.some(
+      (u) => u.email.trim().toLowerCase() === email.trim().toLowerCase()
+    );
+    if (exists) {
+      return { ok: false, error: "An account with this email already exists." };
+    }
+    const newUser = {
+      id:       `user-${Date.now()}`,
+      name:     name.trim(),
+      email:    email.trim().toLowerCase(),
+      whatsapp: whatsapp.trim(),
+      password,
+      role:     "customer",
+    };
+    const updated = [...allUsers, newUser];
+    saveUsers(updated);
+    setUsers(updated);
+    const { password: _pw, ...safe } = newUser;
+    setCurrentUser(safe);
+    return { ok: true };
+  };
+
+  /* ── LOGOUT ── */
   const logout = () => {
     setCurrentUser(null);
-    localStorage.removeItem("vc_current_user");
-  };
-
-  /* All users for admin */
-  const getAllUsers = () => users.map(({ password: _, ...u }) => u);
-
-  /* Toggle user active status */
-  const toggleUserStatus = (id) => {
-    const updated = users.map((u) =>
-      u.id === id ? { ...u, isActive: !u.isActive } : u
-    );
-    saveUsers(updated);
+    localStorage.removeItem(SESSION_KEY);
   };
 
   return (
-    <AuthContext.Provider value={{ currentUser, signup, login, logout, getAllUsers, toggleUserStatus }}>
+    <AuthContext.Provider value={{ currentUser, login, register, logout, users }}>
       {children}
     </AuthContext.Provider>
   );
 }
 
-export const useAuth = () => useContext(AuthContext);
+export function useAuth() {
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error("useAuth must be used within AuthProvider");
+  return ctx;
+}
+
+export { AuthContext };

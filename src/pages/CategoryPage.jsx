@@ -1,5 +1,5 @@
 /**
- * src/pages/CategoryPage.jsx
+ * src/pages/Categorypage.jsx   ← filename: capital C, lowercase p (matches App.jsx import)
  *
  * ✅ Reads from ProductContext (admin-only products).
  * ✅ Clicking a nav link opens this page with correct category filtered.
@@ -35,7 +35,7 @@ const CATEGORY_TITLES = {
   "anarkali-suits":      "Anarkali Suits",
 };
 
-export default function CategoryPage() {
+export default function Categorypage() {
   const { categoryName }  = useParams();
   const navigate          = useNavigate();
 

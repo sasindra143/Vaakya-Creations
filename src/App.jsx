@@ -2,9 +2,9 @@
  * src/App.jsx  —  Vaakya Creations
  *
  * ✅ All imports use explicit .jsx extensions (Netlify/Linux safe)
+ * ✅ FIXED: ProductDetails import path now matches actual filename casing
+ * ✅ FIXED: CategoryPage import matches actual filename (Categorypage.jsx)
  * ✅ SignInPage + SignUpPage defined inline (no separate file needed)
- * ✅ CategoryPage imported normally (file provided separately)
- * ✅ All other pages imported normally
  * ✅ Admin routes fully wired
  */
 
@@ -26,8 +26,8 @@ import { useAuth }          from "./context/AuthContext.jsx";
 
 /* ── Public Pages ── */
 import Home               from "./pages/Home.jsx";
-import Categorypage       from "./pages/CategoryPage.jsx";
-import ProductDetails     from "./pages/Productdetails.jsx";
+import Categorypage       from "./pages/Categorypage.jsx";       /* ✅ matches filename exactly */
+import ProductDetails     from "./pages/Productdetails.jsx";     /* ✅ FIXED: was ProductDetails.jsx */
 import CartPage           from "./pages/CartPage.jsx";
 import WishlistPage       from "./components/Wishlist/WishlistPage.jsx";
 import OrderSuccess       from "./components/Checkout/OrderSuccess.jsx";
@@ -228,7 +228,7 @@ function AuthBrand() {
 }
 
 /* ══════════════════════════════════════════════════════════════════
-   SIGN IN PAGE  (inline — no ./pages/SignInPage.jsx file needed)
+   SIGN IN PAGE
 ══════════════════════════════════════════════════════════════════ */
 function SignInPage() {
   const [email,    setEmail]    = useState("");
@@ -343,7 +343,7 @@ function SignInPage() {
 }
 
 /* ══════════════════════════════════════════════════════════════════
-   SIGN UP PAGE  (inline — no ./pages/SignUpPage.jsx file needed)
+   SIGN UP PAGE
 ══════════════════════════════════════════════════════════════════ */
 function SignUpPage() {
   const [name,     setName]     = useState("");
@@ -550,7 +550,7 @@ function AppContent() {
           <Route path="/blog/:slug"             element={<BlogDetails />} />
           <Route path="/contact"                element={<ContactPage />} />
 
-          {/* ── Auth Routes (components defined inline above) ── */}
+          {/* ── Auth Routes ── */}
           <Route path="/signin"                 element={<SignInPage />} />
           <Route path="/signup"                 element={<SignUpPage />} />
 

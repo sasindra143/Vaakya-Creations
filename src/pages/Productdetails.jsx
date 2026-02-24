@@ -1,5 +1,5 @@
 /**
- * src/pages/ProductDetails.jsx
+ * src/pages/Productdetails.jsx   ← filename: capital P, lowercase d (matches App.jsx import)
  * ✅ Reads from ProductContext — real-time sync with admin changes.
  * ✅ If admin deletes this product, user is redirected automatically.
  */
@@ -61,7 +61,7 @@ const Stars = ({ rating = 0 }) => (
   </div>
 );
 
-export default function Productdetails() {
+export default function ProductDetails() {
   const { id }     = useParams();
   const navigate   = useNavigate();
 
