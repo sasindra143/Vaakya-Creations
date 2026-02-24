@@ -51,6 +51,9 @@ import AdminUsers     from "./components/Admin/AdminUsers";   // NEW
 /* ── Utilities ── */
 import ScrollToTop from "./components/common/ScrollToTop";
 
+import Signinpage from "./pages/Signinpage";
+import Signuppage from "./pages/Signuppage";
+
 /* ─────────────────────────────────────────────────────────────
    ROUTE GUARDS
 ───────────────────────────────────────────────────────────── */
@@ -120,8 +123,10 @@ function AppContent() {
               Login  → email + password
               Signup → name, email, whatsapp, password
           ════════════════════════════════ */}
-          <Route path="/signin" element={<SignInPage />} />
-          <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/signin" element={<Signinpage />} />
+          <Route path="/signup" element={<Signuppage />} />
+
+          
 
           {/* ════════════════════════════════
               ADMIN ROUTES
