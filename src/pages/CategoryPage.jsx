@@ -35,7 +35,7 @@ const CATEGORY_TITLES = {
   "anarkali-suits":      "Anarkali Suits",
 };
 
-export default function Categorypage() {
+export default function CategoryPage() {
   const { categoryName }  = useParams();
   const navigate          = useNavigate();
 
