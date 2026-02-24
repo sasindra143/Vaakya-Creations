@@ -26,7 +26,7 @@ import { useAuth }          from "./context/AuthContext.jsx";
 
 /* ── Public Pages ── */
 import Home               from "./pages/Home.jsx";
-import Categorypage       from "./pages/Categorypage.jsx";       /* ✅ matches filename exactly */
+import Categorypage       from "./pages/CategoryPage.jsx";       /* ✅ matches filename exactly */
 import ProductDetails     from "./pages/Productdetails.jsx";     /* ✅ FIXED: was ProductDetails.jsx */
 import CartPage           from "./pages/CartPage.jsx";
 import WishlistPage       from "./components/Wishlist/WishlistPage.jsx";
