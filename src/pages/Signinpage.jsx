@@ -23,7 +23,7 @@ const EyeIcon = ({ open }) =>
     </svg>
   );
 
-export default function SignInPage() {
+export default function Signinpage() {
   const [form, setForm]         = useState({ email: "", password: "" });
   const [showPass, setShowPass] = useState(false);
   const [error, setError]       = useState("");
