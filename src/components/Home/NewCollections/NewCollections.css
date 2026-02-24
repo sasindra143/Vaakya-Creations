@@ -1,119 +1,783 @@
+/* ================================================================
+   NewCollections.css
+   Luxury Indian Fashion — Collections Section Styles
+   Aesthetic: Editorial · Warm Gold & Deep Maroon · Refined
+   Fonts: Cinzel (display) + Cormorant Garamond (body) + Raleway (UI)
+   ================================================================ */
+
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Cinzel:wght@400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap");
+
+/* ── CSS Custom Properties ──────────────────────────────────── */
+:root {
+  /* Brand palette */
+  --nc-gold:        #c9a84c;
+  --nc-gold-light:  #e8c97a;
+  --nc-gold-pale:   #f5e9c4;
+  --nc-gold-dark:   #9a7a2e;
+  --nc-cream:       #fdf6ec;
+  --nc-cream-alt:   #f5ede0;
+  --nc-maroon:      #7b1b30;
+  --nc-maroon-deep: #4a0e1a;
+  --nc-charcoal:    #191210;
+  --nc-text-dark:   #2a1a0e;
+  --nc-text-mid:    #5c3d2e;
+  --nc-text-light:  #9a7a6a;
+  --nc-border:      rgba(201, 168, 76, 0.18);
+
+  /* Shadows */
+  --nc-shadow-card:       0 6px 36px rgba(74, 14, 26, 0.12);
+  --nc-shadow-card-hover: 0 18px 56px rgba(74, 14, 26, 0.22);
+  --nc-shadow-btn:        0 4px 20px rgba(123, 27, 48, 0.28);
+
+  /* Typography */
+  --nc-font-display: "Cinzel", serif;
+  --nc-font-body:    "Cormorant Garamond", serif;
+  --nc-font-ui:      "Raleway", sans-serif;
+
+  /* Motion */
+  --nc-ease:      cubic-bezier(0.76, 0, 0.24, 1);
+  --nc-ease-out:  cubic-bezier(0.22, 1, 0.36, 1);
+  --nc-duration:  0.42s;
+}
+
+/* ── Global reset for section scope ─────────────────────────── */
+.new-collections *,
+.new-collections *::before,
+.new-collections *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ════════════════════════════════════════════════════════════
+   SECTION WRAPPER
+   ════════════════════════════════════════════════════════════ */
 .new-collections {
-  padding: 100px 80px;
-  background: #f5f5f5;
+  position: relative;
+  width: 100%;
+  background-color: var(--nc-cream);
+  padding: 100px 72px 80px;
+  overflow: hidden;
+
+  /* Subtle ambient radial gradients */
+  background-image:
+    radial-gradient(ellipse 60% 40% at 6% 10%,  rgba(201, 168, 76, 0.07) 0%, transparent 70%),
+    radial-gradient(ellipse 55% 40% at 94% 90%, rgba(123, 27, 48, 0.05)  0%, transparent 70%);
 }
 
+/* ── Decorative top border line ─────────────────────────────── */
+.new-collections::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 7%;
+  right: 7%;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--nc-gold) 30%,
+    var(--nc-gold) 70%,
+    transparent
+  );
+  opacity: 0.22;
+}
+
+/* ════════════════════════════════════════════════════════════
+   SECTION HEADER
+   ════════════════════════════════════════════════════════════ */
 .collections-header {
-  text-align: center;
-  margin-bottom: 60px;
-}
-
-.collections-header h2 {
-  font-size: 3rem;
-  font-weight: 700;
-  margin-bottom: 20px;
-  color: #222;
-}
-
-.collections-header p {
-  max-width: 750px;
-  margin: 0 auto 30px;
-  color: #555;
-  font-size: 1rem;
-  line-height: 1.7;
-}
-
-.view-all-btn {
-  padding: 14px 32px;
-  background: #333;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.3s ease;
-}
-
-.view-all-btn:hover {
-  background: #000;
-  transform: translateY(-3px);
-}
-
-.collections-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
-}
-
-.collection-card {
-  background: #fff;
-  border-radius: 10px;
-  overflow: hidden;
-  text-decoration: none;
-  color: inherit;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-  transition: transform 0.4s ease, box-shadow 0.4s ease;
-}
-
-.collection-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
-}
-
-.collection-image-wrapper {
-  width: 100%;
-  height: 380px;
-  overflow: hidden;
-}
-
-.collection-image-wrapper img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.6s ease;
-}
-
-.collection-card:hover img {
-  transform: scale(1.08);
-}
-
-.collection-footer {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
-  padding: 18px 20px;
-  background: #f8f8f8;
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto 56px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Vertical accent line above header ──────────────────────── */
+.collections-header::before {
+  content: "";
+  display: block;
+  width: 1px;
+  height: 52px;
+  background: linear-gradient(to bottom, transparent, var(--nc-gold));
+  margin-bottom: 28px;
+}
+
+/* ── Eyebrow / overline ─────────────────────────────────────── */
+.collections-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-family: var(--nc-font-ui);
+  font-size: 0.66rem;
   font-weight: 600;
-  font-size: 1rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--nc-gold-dark);
+  margin-bottom: 16px;
 }
 
-.collection-footer .arrow {
-  font-size: 1.2rem;
-  transition: transform 0.3s ease;
+.collections-eyebrow::before,
+.collections-eyebrow::after {
+  content: "";
+  display: inline-block;
+  width: 32px;
+  height: 1px;
+  background: var(--nc-gold);
+  flex-shrink: 0;
 }
 
-.collection-card:hover .arrow {
+/* ── Section heading ────────────────────────────────────────── */
+.collections-header h2 {
+  font-family: var(--nc-font-display);
+  font-size: clamp(2rem, 4.2vw, 3.6rem);
+  font-weight: 500;
+  color: var(--nc-text-dark);
+  letter-spacing: 0.05em;
+  line-height: 1.12;
+  margin-bottom: 20px;
+}
+
+/* ── Description paragraph ──────────────────────────────────── */
+.collections-header p {
+  font-family: var(--nc-font-body);
+  font-size: clamp(1rem, 1.55vw, 1.2rem);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--nc-text-mid);
+  line-height: 1.78;
+  max-width: 600px;
+  margin-bottom: 40px;
+  letter-spacing: 0.01em;
+}
+
+/* ── Stats row ──────────────────────────────────────────────── */
+.collections-stats {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  margin-bottom: 44px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.collections-stat {
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.collections-stat__value {
+  display: block;
+  font-family: var(--nc-font-display);
+  font-size: clamp(1.6rem, 2.8vw, 2.1rem);
+  font-weight: 600;
+  color: var(--nc-maroon);
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+.collections-stat__label {
+  display: block;
+  font-family: var(--nc-font-ui);
+  font-size: 0.60rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--nc-text-light);
+  margin-top: 6px;
+}
+
+.collections-stat-divider {
+  width: 1px;
+  height: 38px;
+  background: var(--nc-border);
+  flex-shrink: 0;
+}
+
+/* ── View All CTA button ────────────────────────────────────── */
+.view-all-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 15px 46px;
+  background: var(--nc-maroon);
+  border: 1.5px solid var(--nc-maroon);
+  color: var(--nc-cream);
+  font-family: var(--nc-font-ui);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  cursor: pointer;
+  overflow: hidden;
+  border-radius: 2px;
+  transition:
+    color         var(--nc-duration) var(--nc-ease),
+    border-color  var(--nc-duration) ease;
+  box-shadow: var(--nc-shadow-btn);
+}
+
+.view-all-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--nc-gold);
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform var(--nc-duration) var(--nc-ease);
+}
+
+.view-all-btn:hover::before,
+.view-all-btn:focus-visible::before {
+  transform: scaleX(1);
+}
+
+.view-all-btn:hover,
+.view-all-btn:focus-visible {
+  color: var(--nc-charcoal);
+  border-color: var(--nc-gold);
+  outline: none;
+}
+
+.view-all-btn__text,
+.view-all-btn__icon {
+  position: relative;
+  z-index: 1;
+}
+
+.view-all-btn__icon {
+  display: inline-flex;
+  align-items: center;
+  transition: transform 0.28s ease;
+}
+
+.view-all-btn:hover .view-all-btn__icon {
   transform: translateX(5px);
 }
 
-/* Responsive */
+/* ── Decorative horizontal divider ──────────────────────────── */
+.collections-divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--nc-gold) 20%,
+    var(--nc-gold) 80%,
+    transparent
+  );
+  opacity: 0.22;
+  margin-bottom: 56px;
+  position: relative;
+  z-index: 1;
+}
 
-@media (max-width: 1200px) {
-  .collections-grid {
-    grid-template-columns: repeat(2, 1fr);
+/* ── Divider center diamond ─────────────────────────────────── */
+.collections-divider::after {
+  content: "◆";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.48rem;
+  color: var(--nc-gold);
+  background: var(--nc-cream);
+  padding: 0 8px;
+  line-height: 1;
+}
+
+/* ════════════════════════════════════════════════════════════
+   COLLECTIONS GRID
+   ════════════════════════════════════════════════════════════ */
+.collections-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: auto;
+  gap: 22px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ════════════════════════════════════════════════════════════
+   COLLECTION CARD
+   ════════════════════════════════════════════════════════════ */
+.collection-card-article {
+  /* wrapper — required for grid-row span to work */
+}
+
+.collection-card {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 2px;
+  cursor: pointer;
+  background: var(--nc-charcoal);
+  box-shadow: var(--nc-shadow-card);
+  aspect-ratio: 3 / 4;
+  display: flex;
+  flex-direction: column;
+  transition:
+    box-shadow var(--nc-duration) ease,
+    transform  var(--nc-duration) var(--nc-ease);
+  outline: none;
+}
+
+.collection-card:hover,
+.collection-card:focus-visible {
+  box-shadow: var(--nc-shadow-card-hover);
+  transform: translateY(-5px);
+}
+
+.collection-card:focus-visible {
+  box-shadow:
+    var(--nc-shadow-card-hover),
+    0 0 0 3px rgba(201, 168, 76, 0.55);
+}
+
+/* ── Card image ─────────────────────────────────────────────── */
+.collection-card__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: transform 0.88s cubic-bezier(0.23, 1, 0.32, 1);
+  will-change: transform;
+}
+
+.collection-card:hover .collection-card__img {
+  transform: scale(1.08);
+}
+
+/* ── Tag badge (appears on hover) ───────────────────────────── */
+.collection-card__tag {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 3;
+  background: var(--nc-gold);
+  color: var(--nc-charcoal);
+  font-family: var(--nc-font-ui);
+  font-size: 0.57rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 2px;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition:
+    opacity  0.34s ease,
+    transform 0.34s var(--nc-ease-out);
+  pointer-events: none;
+}
+
+.collection-card:hover .collection-card__tag,
+.collection-card:focus-visible .collection-card__tag {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Gradient overlay ───────────────────────────────────────── */
+.collection-card__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: linear-gradient(
+    180deg,
+    rgba(10, 5, 2, 0.02) 0%,
+    rgba(10, 5, 2, 0.16) 38%,
+    rgba(10, 5, 2, 0.76) 100%
+  );
+  display: flex;
+  align-items: flex-end;
+  padding: 26px 22px;
+  transition: background var(--nc-duration) ease;
+}
+
+.collection-card:hover .collection-card__overlay {
+  background: linear-gradient(
+    180deg,
+    rgba(10, 5, 2, 0.04) 0%,
+    rgba(10, 5, 2, 0.24) 36%,
+    rgba(10, 5, 2, 0.86) 100%
+  );
+}
+
+/* ── Card body (text group) ─────────────────────────────────── */
+.collection-card__body {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+}
+
+/* ── Card title ─────────────────────────────────────────────── */
+.collection-card__title {
+  font-family: var(--nc-font-display);
+  font-size: clamp(1rem, 1.7vw, 1.55rem);
+  font-weight: 500;
+  color: var(--nc-cream);
+  letter-spacing: 0.04em;
+  line-height: 1.18;
+  margin-bottom: 5px;
+  transition: color 0.28s ease;
+}
+
+.collection-card:hover .collection-card__title {
+  color: var(--nc-gold-light);
+}
+
+/* ── Item count ─────────────────────────────────────────────── */
+.collection-card__count {
+  display: block;
+  font-family: var(--nc-font-ui);
+  font-size: 0.63rem;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(253, 246, 236, 0.50);
+  margin-bottom: 8px;
+}
+
+/* ── Description — subtle, always shown ─────────────────────── */
+.collection-card__desc {
+  font-family: var(--nc-font-body);
+  font-size: 0.90rem;
+  font-style: italic;
+  font-weight: 300;
+  color: rgba(253, 246, 236, 0.55);
+  line-height: 1.5;
+  margin-bottom: 14px;
+  display: none; /* shown on large first card and wide cards via modifier */
+}
+
+/* Show desc on all cards — uniform grid */
+.collection-card__desc {
+  display: block;
+}
+
+/* ── Shop CTA (slides up on hover) ─────────────────────────── */
+.collection-card__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--nc-font-ui);
+  font-size: 0.64rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--nc-gold-light);
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity   0.34s ease 0.06s,
+    transform 0.34s var(--nc-ease-out) 0.06s;
+}
+
+.collection-card__cta svg {
+  transition: transform 0.28s ease;
+}
+
+.collection-card:hover .collection-card__cta,
+.collection-card:focus-visible .collection-card__cta {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.collection-card:hover .collection-card__cta svg {
+  transform: translateX(4px);
+}
+
+/* ════════════════════════════════════════════════════════════
+   BOTTOM ORNAMENT
+   ════════════════════════════════════════════════════════════ */
+.collections-ornament {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 68px;
+  gap: 18px;
+  position: relative;
+  z-index: 1;
+}
+
+.collections-ornament::before,
+.collections-ornament::after {
+  content: "";
+  flex: 1;
+  max-width: 220px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--nc-gold));
+  opacity: 0.30;
+}
+
+.collections-ornament::after {
+  background: linear-gradient(to left, transparent, var(--nc-gold));
+}
+
+.collections-ornament__symbol {
+  font-family: var(--nc-font-display);
+  font-size: 1.2rem;
+  color: var(--nc-gold);
+  opacity: 0.45;
+  letter-spacing: 0.18em;
+}
+
+/* ── Browse all link below ornament ─────────────────────────── */
+.collections-footnote {
+  text-align: center;
+  margin-top: 28px;
+  position: relative;
+  z-index: 1;
+}
+
+.collections-footnote p {
+  font-family: var(--nc-font-body);
+  font-size: 0.95rem;
+  font-style: italic;
+  color: var(--nc-text-light);
+  letter-spacing: 0.01em;
+}
+
+.collections-footnote p strong {
+  color: var(--nc-maroon);
+  font-style: normal;
+  font-weight: 600;
+}
+
+/* ================================================================
+   RESPONSIVE BREAKPOINTS
+   ================================================================ */
+
+/* ── Large desktop (≤ 1440px) ───────────────────────────────── */
+@media (max-width: 1440px) {
+  .new-collections {
+    padding: 88px 56px 70px;
   }
 }
 
-@media (max-width: 768px) {
+/* ── Desktop (≤ 1280px) ─────────────────────────────────────── */
+@media (max-width: 1280px) {
   .new-collections {
-    padding: 60px 30px;
+    padding: 80px 48px 64px;
   }
 
   .collections-grid {
-    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+}
+
+/* ── Tablet landscape (≤ 1024px) ────────────────────────────── */
+@media (max-width: 1024px) {
+  .new-collections {
+    padding: 72px 36px 60px;
   }
 
-  .collection-image-wrapper {
-    height: 300px;
+  /* Drop to 2-column on tablet */
+  .collections-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  /* Always show CTA and tag on touch devices */
+  .collection-card__cta {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .collection-card__tag {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Show description on all cards on tablet */
+  .collection-card__desc {
+    display: block;
+  }
+
+  .collection-card__count {
+    display: none;
+  }
+
+  .collections-stat-divider {
+    height: 30px;
+  }
+
+  .collections-stats {
+    gap: 26px;
+  }
+}
+
+/* ── Tablet portrait (≤ 768px) ──────────────────────────────── */
+@media (max-width: 768px) {
+  .new-collections {
+    padding: 60px 24px 52px;
+  }
+
+  .collections-header {
+    margin-bottom: 44px;
+  }
+
+  .collections-header::before {
+    height: 38px;
+    margin-bottom: 22px;
+  }
+
+  .collections-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .collection-card {
+    aspect-ratio: 2 / 3;
+  }
+
+  .collection-card__desc {
+    display: none;
+  }
+
+  .collection-card__overlay {
+    padding: 20px 16px;
+  }
+
+  .view-all-btn {
+    padding: 13px 36px;
+    font-size: 0.68rem;
+  }
+
+  .collections-ornament {
+    margin-top: 52px;
+  }
+
+  .collections-stat__value {
+    font-size: 1.5rem;
+  }
+}
+
+/* ── Mobile portrait (≤ 540px) ──────────────────────────────── */
+@media (max-width: 540px) {
+  .new-collections {
+    padding: 52px 14px 44px;
+  }
+
+  .collections-header {
+    max-width: 100%;
+    margin-bottom: 38px;
+  }
+
+  /* Still 2-col on mobile — cards are smaller */
+  .collections-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .collection-card {
+    aspect-ratio: 2 / 3;
+    border-radius: 2px;
+  }
+
+  .collection-card__overlay {
+    padding: 16px 12px;
+  }
+
+  .collection-card__title {
+    font-size: 0.92rem;
+  }
+
+  .collection-card__count {
+    display: none;
+  }
+
+  .collection-card__cta {
+    font-size: 0.58rem;
+    gap: 5px;
+  }
+
+  .collections-eyebrow::before,
+  .collections-eyebrow::after {
+    width: 20px;
+  }
+
+  .collections-stats {
+    gap: 18px;
+  }
+
+  .collections-stat__value {
+    font-size: 1.35rem;
+  }
+
+  .view-all-btn {
+    padding: 12px 28px;
+    font-size: 0.66rem;
+    letter-spacing: 0.18em;
+  }
+
+  .collections-ornament {
+    margin-top: 44px;
+  }
+
+  .collections-footnote {
+    margin-top: 20px;
+  }
+}
+
+/* ── Very small screens (≤ 380px) ──────────────────────────── */
+@media (max-width: 380px) {
+  .new-collections {
+    padding: 44px 10px 38px;
+  }
+
+  .collections-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .collection-card__title {
+    font-size: 0.82rem;
+  }
+
+  /* Stack stats vertically on tiny screens */
+  .collections-stats {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .collections-stat-divider {
+    width: 36px;
+    height: 1px;
+  }
+
+  .view-all-btn {
+    padding: 11px 22px;
+    font-size: 0.63rem;
+  }
+}
+
+/* ── Reduced motion ─────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .collection-card,
+  .collection-card__img,
+  .collection-card__overlay,
+  .collection-card__tag,
+  .collection-card__cta,
+  .collection-card__title,
+  .view-all-btn::before {
+    transition: none;
+  }
+
+  .collection-card:hover {
+    transform: none;
+  }
+
+  .collection-card:hover .collection-card__img {
+    transform: none;
   }
 }

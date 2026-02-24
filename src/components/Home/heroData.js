@@ -1,86 +1,81 @@
 /**
- * Hero Slider Data Configuration
- * @description Ultra HD image collection for fashion e-commerce hero carousel
- * @author Senior Developer
+ * heroData.js
+ * @description Slide data for the HeroSlider component.
+ *              Each slide supports: id, image, alt, badge,
+ *              title, titleLine1, titleLine2, subtitle, category, slug.
  * @version 2.0.0
- *
- * Image Sources: Pexels (Ultra High Quality - 7680x4320 @ 2x DPR)
- * All images show people wearing/using actual products
  */
 
 const heroSlides = [
   {
     id: 1,
-    title: "Premium Fabrics Collection",
-    subtitle: "Soft • Elegant • Timeless Threads",
-    image: "https://images.pexels.com/photos/3965543/pexels-photo-3965543.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&dpr=2",
-    alt: "Vibrant colored premium quality fabrics and textiles display",
-    category: "fabrics"
+    image:
+      "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=1800&q=85&auto=format&fit=crop",
+    alt: "Model draped in a rich Kanjivaram silk saree with deep crimson and gold zari borders",
+    badge: "New Arrival · Festive 2025",
+    title: "Kanjivaram Royale",
+    titleLine1: "Kanjivaram",
+    titleLine2: "Royale",
+    subtitle:
+      "Handwoven on the sacred looms of Kanchipuram — pure mulberry silk, 22k gold zari, and three hundred years of artisan mastery. Wear a living heritage.",
+    category: "pattu-sarees",
+    slug: "pattu-sarees",
   },
   {
     id: 2,
-    title: "Stylish Leggings",
-    subtitle: "Comfort Meets Everyday Fashion",
-    image: "https://images.pexels.com/photos/3622623/pexels-photo-3622623.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&dpr=2",
-    alt: "Woman wearing black leggings with white top in athletic style",
-    category: "leggings"
+    image:
+      "https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=1800&q=85&auto=format&fit=crop",
+    alt: "Contemporary designer saree with modern geometric embroidery and sheer georgette fabric",
+    badge: "Trending Now",
+    title: "Fancy Forward",
+    titleLine1: "Fancy",
+    titleLine2: "Forward",
+    subtitle:
+      "Where heritage meets high fashion. Sequined chiffons, printed georgettes, and couture drapes that command every room they enter.",
+    category: "fancy-sarees",
+    slug: "fancy-sarees",
   },
   {
     id: 3,
-    title: "Handmade Jewellery",
-    subtitle: "Crafted With Love & Heritage",
-    image: "https://images.pexels.com/photos/1927769/pexels-photo-1927769.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&dpr=2",
-    alt: "Woman wearing elegant gold handmade jewelry and accessories",
-    category: "jewellery"
+    image:
+      "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=1800&q=85&auto=format&fit=crop",
+    alt: "Luxurious rolls of handloom fabric in vibrant indigo, turmeric, and rose at a weaver's studio",
+    badge: "Exclusive Textiles",
+    title: "The Fabric Studio",
+    titleLine1: "The Fabric",
+    titleLine2: "Studio",
+    subtitle:
+      "Curated textiles for the discerning creator — organic handloom cottons, pure silk yardage, embroidered nets, and buttery French crepes. Your vision, our canvas.",
+    category: "fabrics",
+    slug: "fabrics",
   },
   {
     id: 4,
-    title: "Traditional Pattu Sarees",
-    subtitle: "Rooted In Culture. Elevated In Style.",
-    image: "https://res.cloudinary.com/dvknx0hpm/image/upload/v1771215304/pexels-abhishek-kumar-100706288-9419251_xrykmz.jpg",
-    alt: "Indian woman in traditional silk pattu saree with ornamental jewelry",
-    category: "pattu-sarees"
+    image:
+      "https://images.unsplash.com/photo-1594897030264-ab7d87efc473?w=1800&q=85&auto=format&fit=crop",
+    alt: "Modern Indian women wearing stylish kurtis and co-ord sets in an urban setting",
+    badge: "Ready-to-Wear · New Drop",
+    title: "Modern Indian",
+    titleLine1: "Modern",
+    titleLine2: "Indian",
+    subtitle:
+      "Effortless style for the woman who moves between boardroom and banquet. Flowy kurtis, chic co-ords, and versatile silhouettes designed for real life.",
+    category: "clothing",
+    slug: "clothing",
   },
   {
     id: 5,
-    title: "Fancy Sarees",
-    subtitle: "Grace In Every Drape",
-    image: "https://res.cloudinary.com/dvknx0hpm/image/upload/v1771215441/pexels-manishjangid-30249381_bohizx.jpg",
-    alt: "Woman in ornate fancy embroidered saree for special occasions",
-    category: "fancy-sarees"
-  },
-  {
-    id: 6,
-    title: "Modern Dresses & Tops",
-    subtitle: "Trend Forward Fashion",
-    image: "",
-    alt: "Stylish woman wearing trendy modern dress and contemporary outfit",
-    category: "modern-wear"
-  },
-  {
-    id: 7,
-    title: "Maha Shivaratri Special Offer",
-    subtitle: "Flat 20% OFF On All Ethnic Collections",
-    image: "https://images.pexels.com/photos/3015987/pexels-photo-3015987.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&dpr=2",
-    alt: "Maha Shivaratri festival temple celebration with devotees",
-    category: "festival-offer",
-    isPromo: true
-  },
-  {
-    id: 8,
-    title: "Designer Kurtis Collection",
-    subtitle: "Everyday Ethnic With A Modern Touch",
-    image: "https://images.pexels.com/photos/1639379/pexels-photo-1639379.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&dpr=2",
-    alt: "Woman wearing elegant designer kurti with ethnic embroidery",
-    category: "kurtis"
-  },
-  {
-    id: 9,
-    title: "Festive Wedding Wear",
-    subtitle: "Shine Bright At Every Celebration",
-    image: "https://images.pexels.com/photos/1926770/pexels-photo-1926770.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&dpr=2",
-    alt: "Indian bride in traditional red wedding lehenga and jewelry",
-    category: "wedding-wear"
+    image:
+      "https://images.unsplash.com/photo-1588444837495-c6cfeb53f32d?w=1800&q=85&auto=format&fit=crop",
+    alt: "Intricate handcrafted Indian jewellery — gold-toned earrings and layered necklaces with stone settings",
+    badge: "Artisan Collection",
+    title: "Handmade Treasures",
+    titleLine1: "Handmade",
+    titleLine2: "Treasures",
+    subtitle:
+      "Jewellery born from the hands of master artisans across Rajasthan and Bengal. Every bead, every wire-wrap, every motif completes a story only you can tell.",
+    category: "handmade-jewellery",
+    slug: "handmade-jewellery",
   },
 ];
 
