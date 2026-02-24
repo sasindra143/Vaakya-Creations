@@ -7,7 +7,7 @@ import "./WhatsAppFloat.css";
 
 function WhatsAppFloat() {
   const phoneNumber = "919959732476";
-  const message = encodeURIComponent("Hello! I'm interested in your collections at Tarang Collections. Can you help me? 🛍️");
+  const message = encodeURIComponent("Hello! I'm interested in your collections at Vaakya Creations. Can you help me? 🛍️");
 
   return (
     <a
